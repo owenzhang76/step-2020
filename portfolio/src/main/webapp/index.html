@@ -4,15 +4,41 @@
     <meta charset="UTF-8">
     <title>My Portfolio</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"
+    />
     <script src="script.js"></script>
   </head>
   <body>
     <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
+        <div class="title-container">
+            <h1 class="animate__animated animate__fadeInUp">Owen Zhang</h1>
+            <p class="animate__animated animate__fadeInUp animate__delay-1s tagline">My Covid-19 ridden 2020 STEP Journey</p>
+        </div>
+        <div class="blog-section">
+            <p class="animate__animated animate__fadeInUp animate__delay-2s"> I'm in San Diego right now! Yesterday I went surfing with my best friend Connor.</p>
+            <div id="img-placeholder" class="empty"></div>
+            <img class="animate__animated animate__fadeIn animate__delay-2s blog-images" src="public/images/surfing.png" />
+        </div>
+        <div class="blog-section">
+            <p class="animate">The past month, I stayed with my good friend Brock in Parker, Colorado. My day consisted of bike rides, playing with Bella (the cutest rescued great pyraneas), studying, and working on my healthcare startup.</p>
+            <p class="animate">When I left Brock's lovely home, part of me stayed there forever. I was my first time outside of boarding school and summer programs that I actually got to live in and experience America. In a way, the pandemic helped me experience something I would of never have until I graduated.</p>
+            <div class="row-images-container"> 
+                <img class="animate blog-images-row" src="public/images/bella1.png" />
+                <img class="animate blog-images-row" src="public/images/bella2.png" />
+                <img class="animate blog-images-row" src="public/images/bella3.png" />
+            </div>
+        </div>
+        <div class="quote-section">
+            <p class="animate 1s-delay">Click here to get one of my favorite quotes:</p>
+            <input type="checkbox" id="btnControl"/>
+            <label class="btn" for="btnControl" onclick="addRandomGreeting()">Click me!</label>
+            <div id="quote-container">
+                <div id="quote"></div>
+            </div>
+        </div>
     </div>
-  </body>
+</body>
 </html>
