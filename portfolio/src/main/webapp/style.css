@@ -12,20 +12,19 @@
 }
 
 .blog-images {
-    width: 55%;
     flex-shrink: 1;
+     width: 55%;
 }
   
 .blog-images-row {
     display: flex;
-    width: 33.3%;
     flex-shrink: 1;
+    width: 33.3%;
 }
 
 .blog-section {
-    display: flex;
-    flex-direction: column;
     align-items: center;
+    flex-direction: column;
 }
 
 .blog-section-container {
@@ -35,14 +34,14 @@
 }
 
 body {
+    align-items: center;
+    background-color: #f6f6f6;
     display: flex;
     flex-direction: column;
-    background-color: #f6f6f6;
     font-family: "Lucida Sans Unicode","Lucida Grande","sans-serif" !important;
     font-size: 1.5em !important;
-    line-height: 1.4em !important;
     justify-content: center;
-    align-items: center;
+    line-height: 1.4em !important;
     margin: 0;
 }
 
@@ -72,10 +71,10 @@ center {
 }
 
 .dark-mode {
-    display: flex;
-    flex-direction: column;
     background-color: black;
     color: white;
+    display: flex;
+    flex-direction: column;
 }
 
 .empty-section {
@@ -88,15 +87,15 @@ center {
 }
 
 .fa-linkedin {
-    font-size: 1.3em !important;
     background: black;
     color: white !important;
+    font-size: 1.3em !important;
 }
 
 .fa-github {
-    font-size: 1.3em !important;
     background: black;
     color: white !important;
+    font-size: 1.3em !important;
 }
 
 h1 {
@@ -108,23 +107,23 @@ h2 {
 }
 
 iframe {
-    width: 850px;
-    height: 500px;
     border-radius: 10px;
+    height: 500px;
+    width: 850px;
 }
 
 .iframe-container {
+    align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
     margin-top: 10px;
     margin-bottom: 150px;
 }
 
 #myCarousel {
-    width: 850px;
     height: 500px;
+    width: 850px;
 }
 
 .one-third-width {
@@ -132,13 +131,13 @@ iframe {
 }
   
 p {
-    width: 60%;
-    text-align: center;
     font-family: "Lucida Sans Unicode","Lucida Grande","sans-serif" !important;
     font-size: 1.6em !important;
     line-height: 1.4em !important;
     margin-top: 25px !important;
     margin-bottom: 25px !important;
+    text-align: center;
+    width: 60%;
 }
 
 #parkour-video {
@@ -150,37 +149,37 @@ p {
 }
 
 .projects-header {
-    text-align: center;
     font-size: 1.2em;
     margin-bottom: 200px !important;
+    text-align: center;
 }
 
 .projects-video {
-    outline: none;
-    -webkit-transform: translateZ(0);
     border-radius: 22px;
+    outline: none;
     overflow: hidden;
+    -webkit-transform: translateZ(0);
 }
 
 #quote-container {
-    margin-top: 20px;
     height: 70px;
     margin-bottom: 200px;
+    margin-top: 20px;
 }
 
 .quote-section {
+    align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    align-items: center;
 }
 
 .row-images-container {
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
     flex-shrink: 1;
+    justify-content: flex-start;
     width: 90%;
 }
 
@@ -194,36 +193,36 @@ p {
 
 .small-text {
     font-size: 0.8em !important;
-    margin-top: 5px;
     margin-bottom: 50px;
+    margin-top: 5px;
 }
 
 .social-icons-container {
     display: flex;
     flex-direction: row;
-    width: 10%;
     justify-content: space-evenly;
+    width: 10%;
 }
 
 .social-media-container {
+    align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    margin-top: 40px;
     margin-bottom: 100px;
+    margin-top: 40px;
 }
 
 .tagline {
-    text-align: center;
     font-size: 1.5em;
+    text-align: center;
 }
 
 .title-container {
+    align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
 }
 
 video {
@@ -231,11 +230,11 @@ video {
 }
 
 .video-container {
+    align-items: center;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    margin-top: 10px;
     margin-bottom: 120px;
-    border-radius: 10px;
+    margin-top: 10px;
 }
