@@ -1,9 +1,249 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+.align-left {
+    text-align: left;
+    width: 90%;
 }
 
-#greeting-container {
-  margin-top: 20px;
+.big-margin-bottom {
+    margin-bottom: 200px !important;
+}
+
+.bigger-margin-bottom {
+    margin-bottom: 280px !important;
+}
+
+.blog-images {
+    flex-shrink: 1;
+     width: 55%;
+}
+  
+.blog-images-row {
+    display: flex;
+    flex-shrink: 1;
+    width: 33.3%;
+}
+
+.blog-section {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-section-container { 
+    display: flex;
+    flex-direction: row;
+    height: 900px;
+    margin-bottom: 100px;
+}
+
+body {
+    align-items: center;
+    background-color: #f6f6f6;
+    display: flex;
+    flex-direction: column;
+    font-family: "Lucida Sans Unicode","Lucida Grande","sans-serif" !important;
+    font-size: 1.5em !important;
+    justify-content: center;
+    line-height: 1.4em !important;
+    margin: 0;
+}
+
+#btnControl {
+    display: none;
+}
+
+#btnControl:checked + label {
+    animation: bounce !important;
+    animation-duration: 1s !important;
+}
+
+.carousel-image {
+    width: 100%;
+    
+}
+
+center {
+    font-size: 1.4em !important;
+    margin-bottom: 10px;
+}
+
+#content {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.dark-mode {
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.empty-section {
+    height: 1300px;
+}
+
+
+#existential-crisis {
+    margin-bottom: 40px !important;
+}
+
+.fa-linkedin {
+    background: black;
+    color: white !important;
+    font-size: 1.3em !important;
+}
+
+.fa-github {
+    background: black;
+    color: white !important;
+    font-size: 1.3em !important;
+}
+
+h1 {
+    margin-bottom: 30px !important;
+}
+
+h2 {
+    font-size: 2.0em !important;
+}
+
+iframe {
+    border-radius: 10px;
+    height: 500px;
+    width: 850px;
+}
+
+.iframe-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 150px;
+}
+
+#myCarousel {
+    height: 500px;
+    width: 850px;
+}
+
+.one-third-width {
+    width: 33.3%;
+}
+  
+p {
+    font-family: "Lucida Sans Unicode","Lucida Grande","sans-serif" !important;
+    font-size: 1.6em !important;
+    line-height: 1.4em !important;
+    margin-top: 25px !important;
+    margin-bottom: 25px !important;
+    text-align: center;
+    width: 60%;
+}
+
+#parkour-video {
+    margin-top: 0px;
+}
+
+#piano-video {
+    margin-top: 0px;
+}
+
+.projects-header {
+    font-size: 1.2em;
+    margin-bottom: 200px !important;
+    text-align: center;
+}
+
+.projects-video {
+    border-radius: 22px;
+    outline: none;
+    overflow: hidden;
+    margin-bottom: 120px;
+    -webkit-transform: translateZ(0);
+}
+
+#quote-container {
+    height: 70px;
+    margin-bottom: 200px;
+    margin-top: 20px;
+}
+
+.quote-section {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.row-images-container {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 1;
+    justify-content: flex-start;
+    margin-top: 100px;
+    width: 90%;
+}
+
+.small-margin-bottom {
+    margin-bottom: 0px;
+}
+
+.small-font {
+    font-size: 1.2em !important;
+}
+
+.small-text {
+    font-size: 0.8em !important;
+    margin-bottom: 50px;
+    margin-top: 5px;
+}
+
+.social-icons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 10%;
+}
+
+.social-media-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 100px;
+    margin-top: 40px;
+}
+
+.space-between {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.tagline {
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.title-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+video {
+    outline: none;
+}
+
+.video-container {
+    align-items: center;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 10px;
 }
