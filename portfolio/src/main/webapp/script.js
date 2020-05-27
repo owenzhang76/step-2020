@@ -2,14 +2,16 @@
 
 let elementsToShow;
 let scroll;
-let quotes =
+const quotes =
     ["\"In a world too often governed by corruption and arrogance, it can be difficult to stay true to one's philosophical and literary principles.\"   -Lemony Snicket, A Series of Unfortunate Events", "\"Did you know that the Sparrow flies south for winter?\"   -Skulduggery Pleasant, Skulduggery Pleasant", "\"Someday in your life, you'll realize there is no turning back. There was never any turning back.\"   -u/JayStar1213"];
-let entrances = 
+const entrances = 
     ["animate__bounceInUp", "animate__bounceInLeft", "animate__bounceInRight", "animate__bounceInDown", "animate__fadeInBottomLeft", "animate__fadeInBottomRight"];
 
 $(document).ready(function() {
     // scroll here is a fallback function in case some browswers don't support method requestAnimationFrame. 
-    scroll = window.requestAnimationFrame || function(callback){ window.setTimeout(callback, 1000/60)};
+    // scroll = window.requestAnimationFrame || function(callback){ window.setTimeout(callback, 1000/60)};
+    scroll = (window.requestAnimationFrame != null) ? window.requestAnimationFrame : function(callback){ window.setTimeout(callback, 1000/60)};
+
     // all the elements that require css animation. 
     elementsToShow = document.querySelectorAll('.animate');  
 
@@ -23,33 +25,31 @@ $(document).ready(function() {
  */
 function getRandomQuote() {
 
-    // see function doc on line 57
+    $('#quote').remove();
+
     revertToUnchecked();
 
     let quote = quotes[Math.floor(Math.random() * quotes.length)];
-  
     let entrance = entrances[Math.floor(Math.random() * entrances.length)];
+    let quoteContainer = document.getElementById("sub-quote-container");
 
-    
-    let quoteDiv = document.getElementById('quote');
-
-    // I first clear the quote div's classList in order to assign a random/new css animation from the entrances array. 
-    quoteDiv.className="";
+    // create new quote div in order to assign a random/new css animation from the entrances array. 
+    let quoteDiv = document.createElement('div');
+    quoteDiv.id = "quote";
     quoteDiv.classList.add('italic');
     quoteDiv.classList.add('animate__animated');
     quoteDiv.classList.add(entrance);
     quoteDiv.classList.add('animate__delay-1s');
-
-    quoteDiv.innerText = quote;
-   
+    quoteDiv.innerText = quote;   
+    quoteContainer.appendChild(quoteDiv);
 }
+
 /**
  * Removes an empty div with heigh 700px. This method is used because in testing preview port 8080 browser loads first surfing image slower, therefore elements vertically underneath it are shown into the viewport, therfore triggering the one-time css animations prematurely. 
  * This method asynchronously removes the empty div after 2 seconds, giving the browser enough time to load the image. 
  * QUESTION: Why does $(document).ready() function trigger when images aren't fully loaded?
  */
 function asyncRemovePlaceHolder() {
-    console.log("remove placeholder ran");
     setTimeout(function(){ 
         $('#placeholder').remove(); 
     }, 2000);
@@ -62,14 +62,15 @@ function asyncRemovePlaceHolder() {
  * CSS animation is triggered whenever the checkbox is in "checked" state, therefore in order for the "checked" state to trigger whenever a user presses the label "click me", the checkbox must be reverted to an unchecked state after each click. 
  */
 function revertToUnchecked() {
+    
     let label = document.getElementById('quote-label');
-    label.className= "";
-    label.classList= "";
+
+    label.className = "";
+    label.classList = "";
     label.classList.remove('animate__animated');
     label.classList.remove('animate__fadeInDown');
-    
-    setTimeout(function(){ document.getElementById('btnControl').click(); }, 500);
 
+    setTimeout(function(){ document.getElementById('btnControl').click(); }, 500);
 }
 
 /**
@@ -117,7 +118,6 @@ function loop() {
  * @param {DOM Object} the element to be checked if it is in viewport.
  */
 function isElementInViewport(el) {
-    // special bonus for those using jQuery
     if (typeof jQuery === "function" && el instanceof jQuery) {
       el = el[0];
     }

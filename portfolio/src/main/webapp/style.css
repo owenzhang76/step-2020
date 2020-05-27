@@ -28,11 +28,11 @@
     flex-direction: column;
 }
 
-.blog-section-container {
+.blog-section-container { 
     display: flex;
     flex-direction: row;
-    margin-bottom: 100px;
     height: 900px;
+    margin-bottom: 100px;
 }
 
 body {
@@ -160,6 +160,7 @@ p {
     border-radius: 22px;
     outline: none;
     overflow: hidden;
+    margin-bottom: 120px;
     -webkit-transform: translateZ(0);
 }
 
@@ -182,6 +183,7 @@ p {
     flex-direction: row;
     flex-shrink: 1;
     justify-content: flex-start;
+    margin-top: 100px;
     width: 90%;
 }
 
@@ -243,6 +245,5 @@ video {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-bottom: 120px;
     margin-top: 10px;
 }
