@@ -26,21 +26,21 @@ function getRandomQuote() {
     // see function doc on line 57
     revertToUnchecked();
 
-    const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+    let quote = quotes[Math.floor(Math.random() * quotes.length)];
   
-    let entrance = entrances[Math.floor(Math.random() * greetings.length)];
+    let entrance = entrances[Math.floor(Math.random() * entrances.length)];
 
     
-    let quote = document.getElementById('quote');
+    let quoteDiv = document.getElementById('quote');
 
     // I first clear the quote div's classList in order to assign a random/new css animation from the entrances array. 
-    quote.className="";
-    quote.classList.add('italic');
-    quote.classList.add('animate__animated');
-    quote.classList.add(entrance);
-    quote.classList.add('animate__delay-1s');
+    quoteDiv.className="";
+    quoteDiv.classList.add('italic');
+    quoteDiv.classList.add('animate__animated');
+    quoteDiv.classList.add(entrance);
+    quoteDiv.classList.add('animate__delay-1s');
 
-    quote.innerText = greeting;
+    quoteDiv.innerText = quote;
    
 }
 /**
@@ -49,6 +49,7 @@ function getRandomQuote() {
  * QUESTION: Why does $(document).ready() function trigger when images aren't fully loaded?
  */
 function asyncRemovePlaceHolder() {
+    console.log("remove placeholder ran");
     setTimeout(function(){ 
         $('#placeholder').remove(); 
     }, 2000);

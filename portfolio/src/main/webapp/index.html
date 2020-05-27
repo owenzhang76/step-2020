@@ -37,7 +37,7 @@
         <div class="quote-section">
             <p class="animate">Click here to get one of my favorite quotes:</p>
             <input type="checkbox" id="btnControl"/>
-            <label id="quote-label" class="btn" for="btnControl" onclick="addRandomGreeting()">Click me!</label>
+            <label id="quote-label" class="btn" for="btnControl" onclick="getRandomQuote()">Click me!</label>
             <div id="quote-container">
                 <div><i id="quote"></i></div>
             </div>
@@ -53,7 +53,7 @@
                 </p>
             </div>
             <div class="blog-section-container">
-                <div class="blog-section one-third-width">
+                <div class="blog-section one-third-width space-between">
                     <p class="animate align-left delay 1s-delay">I love adventures. Here is a video of me parkouring on a broken dam.</p>
                     <div class="animate video-container">
                         <video id="parkour-video" width="280" height="500" controls autoplay="false">
@@ -61,17 +61,18 @@
                         </video>
                     </div>
                 </div>
-                <div class="blog-section one-third-width">
-                    <p class="animate align-left delay 1s-delay">I used to be nationally ranked in Vainglory – the best moba in the world. For a while I played in the offical TSM's guild. My player tag here is ArtemisHydra.
-                    </p>
+                <div class="blog-section one-third-width space-between">
+                    <div class="blog-paragraph-container"> 
+                        <p class="animate align-left delay 1s-delay">I used to be nationally ranked in Vainglory – the best moba in the world. For a while I played in the offical TSM's guild. My player tag here is ArtemisHydra.</p>
                     <p class="animate align-left delay 1s-delay">Vainglory is now going under and they are attempting to save the game by moving it to a sustainable community version. No amount of words can describe how I would feel if my childhood companion game were to be gone forever.</p>
+                    </div>
                     <div class="animate video-container">
                         <video width="480" height="300" controls autoplay="false">
                             <source src="public/videos/vainglory.mp4" type=video/mp4>
                         </video>
                     </div>
                 </div>
-                <div class="blog-section one-third-width">
+                <div class="blog-section one-third-width space-between">
                     <p class="animate align-left delay 1s-delay">Music is beautiful. Music saves lives. Here's me playing <i>Beautiful</i> by Ed Sheeran. (Please excuse me not wearing a shirt it was very hot that day)</p>
                     <div class="animate ideo-container">
                         <video id="piano-video" width="280" height="500" controls autoplay="false">
