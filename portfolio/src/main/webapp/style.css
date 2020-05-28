@@ -79,6 +79,14 @@ center {
     flex-direction: column;
 }
 
+.blue-mode {
+    background-color: #7f8ee3;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+
 .empty-section {
     height: 1300px;
 }
