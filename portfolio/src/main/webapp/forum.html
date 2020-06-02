@@ -14,7 +14,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="forum.js"></script>
   </head>
-  <body>
+  <body onLoad="displayComments()">
     <div id="content">
         <div class="nav-bar-container">
             <a href="/">
@@ -25,8 +25,11 @@
                 <div>FORUM</div>
             </a>
         </div>
-        <button onClick="displayComment()">Add New Comment</button>
-        <button onClick="displayThoughts()">Fetch Deep Thoughts</button>
+        <!-- <button onClick="displayComment()">Add New Comment</button>
+        <button onClick="displayThoughts()">Fetch Deep Thoughts</button> -->
+        <form action="/add-comment" method="POST">
+            <input id="comment-input" name="comment-input" placeholder="add comment.."/>
+        </form>
         <div id="comments-container" class="comments-container"></div>
         <div class="blog-section social-media-container">
             <div class="social-icons-container">
