@@ -24,9 +24,21 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/add-comment")
 public class DataServlet extends HttpServlet {
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("Hello there");
+    private ArrayList<String> messages = new Arraylist<String>();
+    messages.add("What is my purpose in life?");
+    messages.add("Why can't I stay happy?");
+    messages.add("Who lives in a pinneapple under the sea?");
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String messagesJson = convertToJsonUsingGson(messages);
+        response.setContentType("application/json");
+        response.getWriter().println(messagesJson);
+    }
+
+    private String convertToJsonUsingGson(ArrayList messages) {
+        Gson gson = new Gson();
+        String json = gson.toJson(messages);
+        return json;
   }
 }
