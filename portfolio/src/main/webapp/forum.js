@@ -14,3 +14,17 @@ function displayComment() {
         })
         .catch(err => console.log(err));
 }
+
+function displayThoughts() {
+    console.log('displayThoughts ran');
+    fetch('/add-comment')
+        .then(response => response.json())
+        .then((thoughts) => {
+            console.log(thoughts);
+            // let thoughtDiv = document.createElement('div');
+            // thoughtDiv.classList.add("thought");
+            // thoughtDiv.innerHTML = thought;
+            // document.getElementById("comments-container").appendChild(thoughtDiv);
+        })
+        .catch(err => console.log(err));
+}
