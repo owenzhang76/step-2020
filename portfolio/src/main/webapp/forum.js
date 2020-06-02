@@ -18,17 +18,15 @@ function displayComment() {
 function displayThoughts() {
     console.log('displayThoughts ran');
     fetch('/add-comment')
-        .then((response) => {
-            console.log(response);
-            console.log(response.json());
-            return response.json();
-        })
+        .then(response => response.json())
         .then((thoughts) => {
             console.log(thoughts);
-            // let thoughtDiv = document.createElement('div');
-            // thoughtDiv.classList.add("thought");
-            // thoughtDiv.innerHTML = thought;
-            // document.getElementById("comments-container").appendChild(thoughtDiv);
+            for (var index in thoughts) {
+                let thoughtDiv = document.createElement('div');
+                thoughtDiv.classList.add("thought");
+                thoughtDiv.innerHTML = thoughts[index];
+                document.getElementById("comments-container").appendChild(thoughtDiv);
+            }
         })
         .catch(err => console.log(err));
 }
