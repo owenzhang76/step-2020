@@ -30,14 +30,14 @@ body {
 }
 
 .fa-linkedin {
-    background: black;
-    color: white !important;
+    background: white;
+    color: black !important;
     font-size: 1.3em !important;
 }
 
 .fa-github {
-    background: black;
-    color: white !important;
+    background: white;
+    color: black !important;
     font-size: 1.3em !important;
 }
 
@@ -47,6 +47,12 @@ h1 {
 
 h2 {
     font-size: 2.0em !important;
+}
+
+.nav-bar-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }
 
 p {

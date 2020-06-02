@@ -136,6 +136,12 @@ iframe {
     width: 850px;
 }
 
+.nav-bar-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
 .one-third-width {
     width: 33.3%;
 }
