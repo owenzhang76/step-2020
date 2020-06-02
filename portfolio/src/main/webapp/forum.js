@@ -18,7 +18,11 @@ function displayComment() {
 function displayThoughts() {
     console.log('displayThoughts ran');
     fetch('/add-comment')
-        .then(response => response.json())
+        .then((response) => {
+            console.log(response);
+            console.log(response.json());
+            return response.json();
+        })
         .then((thoughts) => {
             console.log(thoughts);
             // let thoughtDiv = document.createElement('div');

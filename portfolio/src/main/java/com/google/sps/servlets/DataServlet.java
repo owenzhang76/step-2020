@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +28,17 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/add-comment")
 public class DataServlet extends HttpServlet {
 
-    private List<String> messages;
+    private ArrayList<String> messages;
 
-    @Override
-    public void init() {
+    // @Override
+    // public void init() {
+    //     messages = new Arraylist<>();
+    //     messages.add("What is my purpose in life?");
+    //     messages.add("Why can't I stay happy?");
+    //     messages.add("Who lives in a pinneapple under the sea?");
+    // }
+
+    public DataServlet () {
         messages = new Arraylist<>();
         messages.add("What is my purpose in life?");
         messages.add("Why can't I stay happy?");
@@ -48,5 +56,5 @@ public class DataServlet extends HttpServlet {
         Gson gson = new Gson();
         String json = gson.toJson(messages);
         return json;
-  }
+    }
 }
