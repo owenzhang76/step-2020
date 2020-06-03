@@ -17,12 +17,14 @@ package com.google.sps.servlets;
 import com.google.sps.data.Message;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.lang.Iterable;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.gson.Gson;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -42,15 +44,16 @@ public class DataServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {      
-        Query query = new Query("Message").addSort("timestamp", SortDirection.ASCENDING);
-
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        PreparedQuery results = datastore.prepare(query);
-
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
         messages.clear();
 
-        for (Entity messageEntity : results.asIterable()) {
+        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        Iterable<Entity> results = datastore.prepare(query).asIterable(FetchOptions.Builder.withLimit(3));
+
+        for (Entity messageEntity : results) {
             long id = messageEntity.getKey().getId();
             String messageBody = (String) messageEntity.getProperty("body"); 
             long timestamp = (long) messageEntity.getProperty("timestamp");
