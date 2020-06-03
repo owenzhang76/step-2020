@@ -14,9 +14,16 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.data.Message;
 import java.util.ArrayList;
-import com.google.gson.Gson;
 import java.io.IOException;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.gson.Gson;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,32 +34,49 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/add-comment")
 public class DataServlet extends HttpServlet {
 
-    private ArrayList<String> messages;
+    private ArrayList<Message> messages;
 
     @Override
     public void init() {
-        this.messages = new ArrayList<String>();
-        // this.messages.add("What is my purpose in life?");
-        // this.messages.add("Why can't I stay happy?");
-        // this.messages.add("Who lives in a pinneapple under the sea?");
+        this.messages = new ArrayList<Message>();
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("doGet ran");
-        System.out.println("messages array size: " + messages.size());
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {      
+        Query query = new Query("Message").addSort("timestamp", SortDirection.ASCENDING);
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+
+        messages.clear();
+
+        for (Entity messageEntity : results.asIterable()) {
+            long id = messageEntity.getKey().getId();
+            String messageBody = (String) messageEntity.getProperty("body"); 
+            long timestamp = (long) messageEntity.getProperty("timestamp");
+
+            Message newMessage = new Message(id, messageBody, timestamp);
+            messages.add(newMessage);
+        };
+
         String messagesJson = convertToJsonUsingGson(messages);
+
         response.setContentType("application/json");
         response.getWriter().println(messagesJson);
-        System.out.println(messagesJson);
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("doPost ran");
         String comment = getParameter(request, "comment-input", "");
-        System.out.println("comment is: " + comment);
-        messages.add(comment);
+        long timestamp = System.currentTimeMillis();
+
+        Entity messageEntity = new Entity("Message");
+        messageEntity.setProperty("body", comment);
+        messageEntity.setProperty("timestamp", timestamp);
+        
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        datastore.put(messageEntity);
+
         response.sendRedirect("/forum.html");
     }
 
@@ -63,10 +87,10 @@ public class DataServlet extends HttpServlet {
     }
 
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null) {
-      return defaultValue;
-    }
-    return value;
+        String value = request.getParameter(name);
+        if (value == null) {
+        return defaultValue;
+        }
+        return value;
   }
 }
