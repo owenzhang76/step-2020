@@ -25,6 +25,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Cursor;
 import com.google.gson.Gson;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,8 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/add-comment")
-public class DataServlet extends HttpServlet {
+@WebServlet("/previous-comments")
+public class HistoryCommentsServlet extends HttpServlet {
 
     private ArrayList<Message> messages;
 
@@ -45,11 +46,12 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
-        
-        messages.clear();
+
+        System.out.println(request);
 
         Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        // Cursor startCursor = new Cursor();
         Iterable<Entity> results = datastore.prepare(query).asIterable(FetchOptions.Builder.withLimit(4));
 
         for (Entity messageEntity : results) {
