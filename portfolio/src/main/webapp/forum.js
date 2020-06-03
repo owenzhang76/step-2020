@@ -4,7 +4,7 @@
  * Requires ArrayList message to be cleared each fetch is called. 
  */
 
-const startCursorLocation = 0;
+let startCursorLocation = 0;
 
 function displayComments() {
     console.log("displayComments ran");
@@ -26,6 +26,7 @@ function displayComments() {
                 document.getElementById("comments-container").appendChild(commentDiv);
             }
             startCursorLocation += comments.length;
+            console.log(startCursorLocation);
         })
         .catch(err => console.log(err));
 }
@@ -41,16 +42,16 @@ function loadPreviousComments() {
     };
     console.log(data);
     fetch("/previous-comments", {
-            method: 'GET',
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            body: data
+            body: JSON.stringify(data),
         })
         .then(response => response.json())
         .then((comments) => {
             console.log(comments);
-            console.log(comments.length());
+            console.log(comments.length);
             let orderedCommentsOldToNew = comments.reverse();
             console.log(orderedCommentsOldToNew);
             for (var index in orderedCommentsOldToNew) {
@@ -58,7 +59,7 @@ function loadPreviousComments() {
                 let commentDiv = document.createElement('div');
                 commentDiv.classList.add("comment");
                 commentDiv.innerHTML = "anon: " + comments[index]["body"];
-                document.getElementById("comments-container").appendChild(commentDiv);
+                document.getElementById("previous-comments-container").appendChild(commentDiv);
             }
         })
 }

@@ -18,6 +18,7 @@ import com.google.sps.data.Message;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.lang.Iterable;
+import java.util.Enumeration;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -71,17 +72,30 @@ public class HistoryCommentsServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String comment = getParameter(request, "comment-input", "");
-        long timestamp = System.currentTimeMillis();
+        Enumeration<String> params = request.getParameterNames(); 
+        while(params.hasMoreElements()){
+            String paramName = params.nextElement();
+            System.out.println("Parameter Name - "+paramName+", Value - "+request.getParameter(paramName));
+        }
 
-        Entity messageEntity = new Entity("Message");
-        messageEntity.setProperty("body", comment);
-        messageEntity.setProperty("timestamp", timestamp);
-        
+        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        datastore.put(messageEntity);
+        // Cursor startCursor = new Cursor();
+        Iterable<Entity> results = datastore.prepare(query).asIterable(FetchOptions.Builder.withLimit(4));
 
-        response.sendRedirect("/forum.html");
+        for (Entity messageEntity : results) {
+            long id = messageEntity.getKey().getId();
+            String messageBody = (String) messageEntity.getProperty("body"); 
+            long timestamp = (long) messageEntity.getProperty("timestamp");
+
+            Message newMessage = new Message(id, messageBody, timestamp);
+            messages.add(newMessage);
+        };
+
+        String messagesJson = convertToJsonUsingGson(messages);
+        
+        response.setContentType("application/json");
+        response.getWriter().println(messagesJson);
     }
 
     private String convertToJsonUsingGson(ArrayList messages) {
