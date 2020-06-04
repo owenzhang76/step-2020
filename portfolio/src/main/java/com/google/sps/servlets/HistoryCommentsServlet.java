@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.io.IOException;
 import java.lang.Iterable;
 import java.util.Enumeration;
+import java.util.stream.Collectors;
+import java.util.Scanner;
+import org.json.*;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -28,6 +31,9 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +50,7 @@ public class HistoryCommentsServlet extends HttpServlet {
     public void init() {
         this.messages = new ArrayList<Message>();
     }
+
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
@@ -70,13 +77,19 @@ public class HistoryCommentsServlet extends HttpServlet {
         response.getWriter().println(messagesJson);
     }
 
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Enumeration<String> params = request.getParameterNames(); 
-        while(params.hasMoreElements()){
-            String paramName = params.nextElement();
-            System.out.println("Parameter Name - "+paramName+", Value - "+request.getParameter(paramName));
-        }
+        System.out.println("goPost ran");
+
+        String test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        System.out.println("This is the test string: " + test);
+        
+        // JSONParser parser = new JSONParser();
+        // JSONObject dataObj = (JSONObject) parser.parse(stringToParse);
+        JsonObject dataObj = new JsonParser().parse(test).getAsJsonObject();
+        System.out.println("This is dataObj: " + dataObj);
+        System.out.println("This is dataObj value: " + dataObj.startIndex);
 
         Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -98,11 +111,18 @@ public class HistoryCommentsServlet extends HttpServlet {
         response.getWriter().println(messagesJson);
     }
 
+
     private String convertToJsonUsingGson(ArrayList messages) {
         Gson gson = new Gson();
         String json = gson.toJson(messages);
         return json;
     }
+
+    // private String convertToJsonUsingGson(HttpServletRequest request) {
+    //     Gson gson = new Gson();
+    //     String json = gson.toJson(request);
+    //     return json;
+    // }
 
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
@@ -110,5 +130,6 @@ public class HistoryCommentsServlet extends HttpServlet {
         return defaultValue;
         }
         return value;
-  }
+    }
+
 }

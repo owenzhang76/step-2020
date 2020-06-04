@@ -54,12 +54,12 @@ function loadPreviousComments() {
             console.log(comments.length);
             let orderedCommentsOldToNew = comments.reverse();
             console.log(orderedCommentsOldToNew);
-            for (var index in orderedCommentsOldToNew) {
+            for (var index in comments) {
                 console.log("inside for in loop");
                 let commentDiv = document.createElement('div');
                 commentDiv.classList.add("comment");
                 commentDiv.innerHTML = "anon: " + comments[index]["body"];
-                document.getElementById("previous-comments-container").appendChild(commentDiv);
+                document.getElementById("comments-container").prepend(commentDiv);
             }
         })
 }
