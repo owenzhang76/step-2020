@@ -54,7 +54,7 @@ function loadPreviousComments() {
             console.log(comments.length);
             let orderedCommentsOldToNew = comments.reverse();
             console.log(orderedCommentsOldToNew);
-            for (var index in comments) {
+            for (var index in orderedCommentsOldToNew) {
                 console.log("inside for in loop");
                 let commentDiv = document.createElement('div');
                 commentDiv.classList.add("comment");

@@ -54,12 +54,8 @@ public class HistoryCommentsServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
-
-        System.out.println(request);
-
         Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        // Cursor startCursor = new Cursor();
         Iterable<Entity> results = datastore.prepare(query).asIterable(FetchOptions.Builder.withLimit(4));
 
         for (Entity messageEntity : results) {
@@ -80,21 +76,18 @@ public class HistoryCommentsServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("goPost ran");
+        System.out.println("doPost ran");
 
         String test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        System.out.println("This is the test string: " + test);
-        
-        // JSONParser parser = new JSONParser();
-        // JSONObject dataObj = (JSONObject) parser.parse(stringToParse);
         JsonObject dataObj = new JsonParser().parse(test).getAsJsonObject();
-        System.out.println("This is dataObj: " + dataObj);
-        System.out.println("This is dataObj value: " + dataObj.startIndex);
+        String startIndex = (dataObj.get("startIndex")).getAsString();
+
+        FetchOptions options = FetchOptions.Builder.withLimit(4);
+        options.startCursor(Cursor.fromWebSafeString(startIndex));
 
         Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        // Cursor startCursor = new Cursor();
-        Iterable<Entity> results = datastore.prepare(query).asIterable(FetchOptions.Builder.withLimit(4));
+        Iterable<Entity> results = datastore.prepare(query).asIterable(options);
 
         for (Entity messageEntity : results) {
             long id = messageEntity.getKey().getId();
@@ -118,11 +111,6 @@ public class HistoryCommentsServlet extends HttpServlet {
         return json;
     }
 
-    // private String convertToJsonUsingGson(HttpServletRequest request) {
-    //     Gson gson = new Gson();
-    //     String json = gson.toJson(request);
-    //     return json;
-    // }
 
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
