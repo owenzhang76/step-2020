@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 public class HistoryCommentsServlet extends HttpServlet {
 
     private ArrayList<Message> messages;
+    private Cursor cursor;
 
     @Override
     public void init() {
@@ -56,7 +57,9 @@ public class HistoryCommentsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
         Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Iterable<Entity> results = datastore.prepare(query).asIterable(FetchOptions.Builder.withLimit(4));
+        PreparedQuery preparedQuery = datastore.prepare(query);
+        Iterable<Entity> results = preparedQuery.asIterable(FetchOptions.Builder.withLimit(4));
+        cursor = preparedQuery.asQueryResultIterable(withLimit(4)).getCursor();
 
         for (Entity messageEntity : results) {
             long id = messageEntity.getKey().getId();
@@ -83,12 +86,13 @@ public class HistoryCommentsServlet extends HttpServlet {
         String startIndex = (dataObj.get("startIndex")).getAsString();
 
         FetchOptions options = FetchOptions.Builder.withLimit(4);
-        options.startCursor(Cursor.fromWebSafeString(startIndex));
+        options.startCursor(cursor);
 
         Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Iterable<Entity> results = datastore.prepare(query).asIterable(options);
 
+        System.out.println("results: " + results);
         for (Entity messageEntity : results) {
             long id = messageEntity.getKey().getId();
             String messageBody = (String) messageEntity.getProperty("body"); 
@@ -99,7 +103,8 @@ public class HistoryCommentsServlet extends HttpServlet {
         };
 
         String messagesJson = convertToJsonUsingGson(messages);
-        
+        System.out.println("messagesJson: " + messagesJson);
+
         response.setContentType("application/json");
         response.getWriter().println(messagesJson);
     }
