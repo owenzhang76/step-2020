@@ -30,6 +30,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Cursor;
+import com.google.appengine.api.datastore.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,40 +57,40 @@ public class HistoryCommentsServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-        PreparedQuery preparedQuery = datastore.prepare(query);
-        FetchOptions options = FetchOptions.Builder.withLimit(4);
-        String startCursor = req.getParameter(request, "comment-cursor-input", "");
-        // if ((!startCursor.equals("")) || (startCursor != null)) {
-        //     options.startCursor()
-        // }
-        if(startCursor.equals("0")) {
-            System.out.println("Inside if");
-            Cursor cursor = preparedQuery.asQueryResultList(options).getCursor();
-            String encodedCursor = cursor.toWebSafeString();
-            System.out.println("this is the cursor: " + encodedCursor);
-        }
+    //     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    //     Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
+    //     PreparedQuery preparedQuery = datastore.prepare(query);
+    //     FetchOptions options = FetchOptions.Builder.withLimit(4);
+    //     String startCursor = request.getParameter(request, "comment-cursor-input", "");
+    //     // if ((!startCursor.equals("")) || (startCursor != null)) {
+    //     //     options.startCursor()
+    //     // }
+    //     if(startCursor.equals("0")) {
+    //         System.out.println("Inside if");
+    //         Cursor cursor = preparedQuery.asQueryResultList(options).getCursor();
+    //         String encodedCursor = cursor.toWebSafeString();
+    //         System.out.println("this is the cursor: " + encodedCursor);
+    //     }
 
-        Iterable<Entity> results = preparedQuery.asIterable(options);
+    //     Iterable<Entity> results = preparedQuery.asIterable(options);
         
 
-        for (Entity messageEntity : results) {
-            long id = messageEntity.getKey().getId();
-            String messageBody = (String) messageEntity.getProperty("body"); 
-            long timestamp = (long) messageEntity.getProperty("timestamp");
-            Message newMessage = new Message(id, messageBody, timestamp);
-            messages.add(newMessage);
-        };
+    //     for (Entity messageEntity : results) {
+    //         long id = messageEntity.getKey().getId();
+    //         String messageBody = (String) messageEntity.getProperty("body"); 
+    //         long timestamp = (long) messageEntity.getProperty("timestamp");
+    //         Message newMessage = new Message(id, messageBody, timestamp);
+    //         messages.add(newMessage);
+    //     };
 
-        long fakeTimestamp = System.currentTimeMillis();
-        Message cursorPretendingToBeMessage = new Message("000", "encodedCursor", fakeTimestamp);
-        messages.add(cursorPretendingToBeMessage);
+    //     long fakeTimestamp = System.currentTimeMillis();
+    //     Message cursorPretendingToBeMessage = new Message("000", "encodedCursor", fakeTimestamp);
+    //     messages.add(cursorPretendingToBeMessage);
 
-        String messagesJson = convertToJsonUsingGson(messages);
+    //     String messagesJson = convertToJsonUsingGson(messages);
         
-        response.setContentType("application/json");
-        response.getWriter().println(messagesJson);
+    //     response.setContentType("application/json");
+    //     response.getWriter().println(messagesJson);
     }
 
 
@@ -99,35 +100,46 @@ public class HistoryCommentsServlet extends HttpServlet {
 
         String test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         JsonObject dataObj = new JsonParser().parse(test).getAsJsonObject();
+        // startIndex is already encoded after the first time. 
         String startIndex = (dataObj.get("startIndex")).getAsString();
+        String encodedCursor = "";
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
+        PreparedQuery preparedQuery = datastore.prepare(query);
         FetchOptions options = FetchOptions.Builder.withLimit(4);
         if(startIndex.equals("0")) {
             System.out.println("Inside if");
             Cursor cursor = preparedQuery.asQueryResultList(options).getCursor();
-            String encodedCursor = cursor.toWebSafeString();
-            System.out.println("this is the cursor: " + encodedCursor);
+            encodedCursor = cursor.toWebSafeString();
+            System.out.println("this is the first cursor: " + encodedCursor);
+        } else {
+            encodedCursor = startIndex;
+            System.out.println("this is the now old encodedCursor: " + encodedCursor);
+            System.out.println("this is the now old unnecodedCursor: " + Cursor.fromWebSafeString(encodedCursor));
         }
         options.startCursor(Cursor.fromWebSafeString(encodedCursor));
-        PreparedQuery preparedQuery = datastore.prepare(query);
-        Iterable<Entity> results = datastore.prepare(query).asIterable(options);
+       
+        // Iterable<Entity> results = preparedQuery.asIterable(options);
+        QueryResultList<Entity> resultList = preparedQuery.asQueryResultList(options);
+        String updatedEncodedCursor = resultList.getCursor().toWebSafeString();
+        System.out.println("this is the updated encodedCursor: " + updatedEncodedCursor);
+        System.out.println("resultList: " + resultList);
+        
+        messages.clear(); 
 
-        System.out.println("results: " + results);
-
-        for (Entity messageEntity : results) {
+        for (Entity messageEntity : resultList) {
             long id = messageEntity.getKey().getId();
             String messageBody = (String) messageEntity.getProperty("body"); 
             long timestamp = (long) messageEntity.getProperty("timestamp");
             Message newMessage = new Message(id, messageBody, timestamp);
             messages.add(newMessage);
         };
-
+        long fakeId = 000;
         long fakeTimestamp = System.currentTimeMillis();
-        Message cursorPretendingToBeMessage = new Message("000", "encodedCursor", fakeTimestamp);
+        Message cursorPretendingToBeMessage = new Message(fakeId, updatedEncodedCursor, fakeTimestamp);
         messages.add(cursorPretendingToBeMessage);
-        
+
         String messagesJson = convertToJsonUsingGson(messages);
         System.out.println("messagesJson: " + messagesJson);
 

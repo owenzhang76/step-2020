@@ -4,7 +4,7 @@
  * Requires ArrayList message to be cleared each fetch is called. 
  */
 
-let startCursorLocation = 0;
+let startCursorLocation = "0";
 
 function displayComments() {
     console.log("displayComments ran");
@@ -25,7 +25,7 @@ function displayComments() {
                 commentDiv.innerHTML = "anon: " + comments[index]["body"];
                 document.getElementById("comments-container").appendChild(commentDiv);
             }
-            startCursorLocation += comments.length;
+            // startCursorLocation += comments.length;
             console.log(startCursorLocation);
         })
         .catch(err => console.log(err));
@@ -52,14 +52,21 @@ function loadPreviousComments() {
         .then((comments) => {
             console.log(comments);
             console.log(comments.length);
-            let orderedCommentsOldToNew = comments.reverse();
+            let orderedCommentsOldToNew = comments;
+            orderedCommentsOldToNew.reverse();
             console.log(orderedCommentsOldToNew);
-            for (var index in orderedCommentsOldToNew) {
+            for (var index in orderedCommentsOldToNew.reverse()) {
                 console.log("inside for in loop");
-                let commentDiv = document.createElement('div');
-                commentDiv.classList.add("comment");
-                commentDiv.innerHTML = "anon: " + comments[index]["body"];
-                document.getElementById("comments-container").prepend(commentDiv);
+                if (comments[index]["id"] == 0) {
+                    console.log("found the encodedCursorString");
+                    console.log("encoded string is " + comments[index]["body"]);
+                    startCursorLocation = comments[index]["body"];
+                } else {
+                    let commentDiv = document.createElement('div');
+                    commentDiv.classList.add("comment");
+                    commentDiv.innerHTML = "anon: " + comments[index]["body"];
+                    document.getElementById("comments-container").prepend(commentDiv);
+                }
             }
         })
 }

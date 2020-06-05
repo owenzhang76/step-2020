@@ -25,6 +25,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.*;
 import com.google.gson.Gson;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -48,19 +49,19 @@ public class DataServlet extends HttpServlet {
         
         messages.clear();
 
-        /* Original query that works
+        //Original query that works
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         Iterable<Entity> results = datastore.prepare(query).asIterable(FetchOptions.Builder.withLimit(4));
-        */ 
+        
 
         /* New attempted Solution */
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-        PreparedQuery preparedQuery = datastore.prepare(query);
-        FetchOptions options = FetchOptions.Builder.withLimit(4);
-        Cursor cursor = preparedQuery.asQueryResultList(withLimit(4)).getCursor();
-        String encodedCursor = cursor.toWebSafeString();
+        // DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        // Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
+        // PreparedQuery preparedQuery = datastore.prepare(query);
+        // FetchOptions options = FetchOptions.Builder.withLimit(4);
+        // Cursor cursor = preparedQuery.asQueryResultList(options).getCursor();
+        // String encodedCursor = cursor.toWebSafeString();
         // Pass this encodedCursor back to HTML and save it as global variable in forum.js.
 
 
@@ -70,7 +71,7 @@ public class DataServlet extends HttpServlet {
             // String encodedCursor = cursor.toWebSafeString();
         // }
         
-        System.out.println("Encoded cursor is: " + encodedCursor);
+        // System.out.println("Encoded cursor is: " + encodedCursor);
 
         for (Entity messageEntity : results) {
             long id = messageEntity.getKey().getId();
