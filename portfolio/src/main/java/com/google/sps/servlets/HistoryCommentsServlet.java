@@ -54,21 +54,37 @@ public class HistoryCommentsServlet extends HttpServlet {
 
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
-        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         PreparedQuery preparedQuery = datastore.prepare(query);
-        Iterable<Entity> results = preparedQuery.asIterable(FetchOptions.Builder.withLimit(4));
-        cursor = preparedQuery.asQueryResultIterable(withLimit(4)).getCursor();
+        FetchOptions options = FetchOptions.Builder.withLimit(4);
+        String startCursor = req.getParameter(request, "comment-cursor-input", "");
+        // if ((!startCursor.equals("")) || (startCursor != null)) {
+        //     options.startCursor()
+        // }
+        if(startCursor.equals("0")) {
+            System.out.println("Inside if");
+            Cursor cursor = preparedQuery.asQueryResultList(options).getCursor();
+            String encodedCursor = cursor.toWebSafeString();
+            System.out.println("this is the cursor: " + encodedCursor);
+        }
+
+        Iterable<Entity> results = preparedQuery.asIterable(options);
+        
 
         for (Entity messageEntity : results) {
             long id = messageEntity.getKey().getId();
             String messageBody = (String) messageEntity.getProperty("body"); 
             long timestamp = (long) messageEntity.getProperty("timestamp");
-
             Message newMessage = new Message(id, messageBody, timestamp);
             messages.add(newMessage);
         };
+
+        long fakeTimestamp = System.currentTimeMillis();
+        Message cursorPretendingToBeMessage = new Message("000", "encodedCursor", fakeTimestamp);
+        messages.add(cursorPretendingToBeMessage);
 
         String messagesJson = convertToJsonUsingGson(messages);
         
@@ -85,23 +101,33 @@ public class HistoryCommentsServlet extends HttpServlet {
         JsonObject dataObj = new JsonParser().parse(test).getAsJsonObject();
         String startIndex = (dataObj.get("startIndex")).getAsString();
 
-        FetchOptions options = FetchOptions.Builder.withLimit(4);
-        options.startCursor(cursor);
-
-        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
+        FetchOptions options = FetchOptions.Builder.withLimit(4);
+        if(startIndex.equals("0")) {
+            System.out.println("Inside if");
+            Cursor cursor = preparedQuery.asQueryResultList(options).getCursor();
+            String encodedCursor = cursor.toWebSafeString();
+            System.out.println("this is the cursor: " + encodedCursor);
+        }
+        options.startCursor(Cursor.fromWebSafeString(encodedCursor));
+        PreparedQuery preparedQuery = datastore.prepare(query);
         Iterable<Entity> results = datastore.prepare(query).asIterable(options);
 
         System.out.println("results: " + results);
+
         for (Entity messageEntity : results) {
             long id = messageEntity.getKey().getId();
             String messageBody = (String) messageEntity.getProperty("body"); 
             long timestamp = (long) messageEntity.getProperty("timestamp");
-
             Message newMessage = new Message(id, messageBody, timestamp);
             messages.add(newMessage);
         };
 
+        long fakeTimestamp = System.currentTimeMillis();
+        Message cursorPretendingToBeMessage = new Message("000", "encodedCursor", fakeTimestamp);
+        messages.add(cursorPretendingToBeMessage);
+        
         String messagesJson = convertToJsonUsingGson(messages);
         System.out.println("messagesJson: " + messagesJson);
 

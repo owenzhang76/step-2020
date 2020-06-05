@@ -48,9 +48,29 @@ public class DataServlet extends HttpServlet {
         
         messages.clear();
 
-        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
+        /* Original query that works
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         Iterable<Entity> results = datastore.prepare(query).asIterable(FetchOptions.Builder.withLimit(4));
+        */ 
+
+        /* New attempted Solution */
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
+        PreparedQuery preparedQuery = datastore.prepare(query);
+        FetchOptions options = FetchOptions.Builder.withLimit(4);
+        Cursor cursor = preparedQuery.asQueryResultList(withLimit(4)).getCursor();
+        String encodedCursor = cursor.toWebSafeString();
+        // Pass this encodedCursor back to HTML and save it as global variable in forum.js.
+
+
+        // String startCursor = req.getParameter(request, "comment-cursor-input", "");
+        // if (startCursor == null) {
+            // Cursor cursor = preparedQuery.asQueryResultList(withLimit(4)).getCursor();
+            // String encodedCursor = cursor.toWebSafeString();
+        // }
+        
+        System.out.println("Encoded cursor is: " + encodedCursor);
 
         for (Entity messageEntity : results) {
             long id = messageEntity.getKey().getId();
@@ -62,9 +82,10 @@ public class DataServlet extends HttpServlet {
         };
 
         String messagesJson = convertToJsonUsingGson(messages);
-        
+
         response.setContentType("application/json");
         response.getWriter().println(messagesJson);
+        // response.getWriter().println(encodedCursor);
     }
 
     @Override
