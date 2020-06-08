@@ -49,36 +49,16 @@ public class DataServlet extends HttpServlet {
         
         messages.clear();
 
-        //Original query that works
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         Iterable<Entity> results = datastore.prepare(query).asIterable(FetchOptions.Builder.withLimit(4));
-        
-
-        /* New attempted Solution */
-        // DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        // Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-        // PreparedQuery preparedQuery = datastore.prepare(query);
-        // FetchOptions options = FetchOptions.Builder.withLimit(4);
-        // Cursor cursor = preparedQuery.asQueryResultList(options).getCursor();
-        // String encodedCursor = cursor.toWebSafeString();
-        // Pass this encodedCursor back to HTML and save it as global variable in forum.js.
-
-
-        // String startCursor = req.getParameter(request, "comment-cursor-input", "");
-        // if (startCursor == null) {
-            // Cursor cursor = preparedQuery.asQueryResultList(withLimit(4)).getCursor();
-            // String encodedCursor = cursor.toWebSafeString();
-        // }
-        
-        // System.out.println("Encoded cursor is: " + encodedCursor);
 
         for (Entity messageEntity : results) {
             long id = messageEntity.getKey().getId();
             String messageBody = (String) messageEntity.getProperty("body"); 
             long timestamp = (long) messageEntity.getProperty("timestamp");
-
-            Message newMessage = new Message(id, messageBody, timestamp);
+            String senderName = (String) messageEntity.getProperty("senderName");
+            Message newMessage = new Message(id, messageBody, timestamp, senderName);
             messages.add(newMessage);
         };
 
@@ -86,18 +66,19 @@ public class DataServlet extends HttpServlet {
 
         response.setContentType("application/json");
         response.getWriter().println(messagesJson);
-        // response.getWriter().println(encodedCursor);
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String comment = getParameter(request, "comment-input", "");
+        String senderName = getParameter(request, "chatname-input", "");
         long timestamp = System.currentTimeMillis();
 
         Entity messageEntity = new Entity("Message");
         messageEntity.setProperty("body", comment);
         messageEntity.setProperty("timestamp", timestamp);
-        
+        messageEntity.setProperty("senderName", senderName);
+
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         datastore.put(messageEntity);
 

@@ -1,11 +1,14 @@
+let startCursorLocation = "0";
+
+$(document).ready(function() {
+    checkLogin();
+})
+
 /*
  * loads x newest comments. 
  * Comments are sorted in descending order, therefore we reverse iterate through comments to display in an old at top new at bottom model. 
  * Requires ArrayList message to be cleared each fetch is called. 
  */
-
-let startCursorLocation = "0";
-
 function displayComments() {
     console.log("displayComments ran");
     fetch('/add-comment')
@@ -22,10 +25,13 @@ function displayComments() {
                 console.log("inside for in loop");
                 let commentDiv = document.createElement('div');
                 commentDiv.classList.add("comment");
-                commentDiv.innerHTML = "anon: " + comments[index]["body"];
+                if(comments[index]["senderName"] == null) {
+                    commentDiv.innerHTML = "anon: " + comments[index]["body"];
+                } else {
+                    commentDiv.innerHTML = comments[index]["senderName"] + ": " + comments[index]["body"];
+                }
                 document.getElementById("comments-container").appendChild(commentDiv);
             }
-            // startCursorLocation += comments.length;
             console.log(startCursorLocation);
         })
         .catch(err => console.log(err));
@@ -64,9 +70,36 @@ function loadPreviousComments() {
                 } else {
                     let commentDiv = document.createElement('div');
                     commentDiv.classList.add("comment");
-                    commentDiv.innerHTML = "anon: " + comments[index]["body"];
+                    if(comments[index]["senderName"] == null) {
+                        commentDiv.innerHTML = "anon: " + comments[index]["body"];
+                    } else {
+                        commentDiv.innerHTML = comments[index]["senderName"] + ": " + comments[index]["body"];
+                    }
                     document.getElementById("comments-container").prepend(commentDiv);
                 }
+            }
+        })
+}
+
+function checkLogin() {
+    fetch('/check-login')
+        .then(response => response.json())
+        .then((data) => {
+            console.log(data);
+            let successOrFailure = data[0];
+            if(successOrFailure === "true") {
+                console.log("inside if");
+                document.getElementById("login-logout-button").href = data[1];
+                document.getElementById("login-logout-text").innerText = "LOGOUT";
+                document.getElementById("login-to-chat").style.display = "none";
+                 document.getElementById("chat-info-container").style.display = "flex";
+                displayComments();
+            } else {
+                console.log("inside else");
+                document.getElementById("chat-info-container").style.display = "none";
+                document.getElementById("login-logout-button").href = data[1];
+                document.getElementById("login-logout-text").innerText = "LOGIN";
+                displayComments();
             }
         })
 }

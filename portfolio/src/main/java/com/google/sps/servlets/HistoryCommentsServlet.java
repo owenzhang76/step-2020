@@ -132,12 +132,13 @@ public class HistoryCommentsServlet extends HttpServlet {
             long id = messageEntity.getKey().getId();
             String messageBody = (String) messageEntity.getProperty("body"); 
             long timestamp = (long) messageEntity.getProperty("timestamp");
-            Message newMessage = new Message(id, messageBody, timestamp);
+            String senderName = (String) messageEntity.getProperty("senderName");
+            Message newMessage = new Message(id, messageBody, timestamp, senderName);
             messages.add(newMessage);
         };
         long fakeId = 000;
         long fakeTimestamp = System.currentTimeMillis();
-        Message cursorPretendingToBeMessage = new Message(fakeId, updatedEncodedCursor, fakeTimestamp);
+        Message cursorPretendingToBeMessage = new Message(fakeId, updatedEncodedCursor, fakeTimestamp, "system");
         messages.add(cursorPretendingToBeMessage);
 
         String messagesJson = convertToJsonUsingGson(messages);
