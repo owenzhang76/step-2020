@@ -78,20 +78,13 @@ public class HistoryCommentsServlet extends HttpServlet {
             System.out.println("Inside if");
             Cursor cursor = preparedQuery.asQueryResultList(options).getCursor();
             encodedCursor = cursor.toWebSafeString();
-            System.out.println("this is the first cursor: " + encodedCursor);
         } else {
             encodedCursor = startIndex;
-            System.out.println("this is the now old encodedCursor: " + encodedCursor);
-            System.out.println("this is the now old unnecodedCursor: " + Cursor.fromWebSafeString(encodedCursor));
         }
         options.startCursor(Cursor.fromWebSafeString(encodedCursor));
        
-        // Iterable<Entity> results = preparedQuery.asIterable(options);
         QueryResultList<Entity> resultList = preparedQuery.asQueryResultList(options);
         String updatedEncodedCursor = resultList.getCursor().toWebSafeString();
-        System.out.println("this is the updated encodedCursor: " + updatedEncodedCursor);
-        System.out.println("resultList: " + resultList);
-        
         messages.clear(); 
 
         for (Entity messageEntity : resultList) {
@@ -125,10 +118,7 @@ public class HistoryCommentsServlet extends HttpServlet {
 
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
-        if (value == null) {
-        return defaultValue;
-        }
-        return value;
+        return value != null ? value : defaultValue;
     }
 
 }

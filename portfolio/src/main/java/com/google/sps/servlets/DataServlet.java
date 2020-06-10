@@ -16,6 +16,9 @@ package com.google.sps.servlets;
 
 import com.google.sps.data.Message;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import java.io.IOException;
 import java.lang.Iterable;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -37,32 +40,28 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/add-comment")
 public class DataServlet extends HttpServlet {
 
-    private ArrayList<Message> messages;
-
     @Override
     public void init() {
-        this.messages = new ArrayList<Message>();
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
-        
-        messages.clear();
-
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
         Iterable<Entity> results = datastore.prepare(query).asIterable(FetchOptions.Builder.withLimit(4));
 
-        for (Entity messageEntity : results) {
-            long id = messageEntity.getKey().getId();
-            String messageBody = (String) messageEntity.getProperty("body"); 
-            long timestamp = (long) messageEntity.getProperty("timestamp");
-            String senderName = (String) messageEntity.getProperty("senderName");
-            String imageUrl = (String) messageEntity.getProperty("imageUrl");
-            Message newMessage = new Message(id, messageBody, timestamp, senderName, imageUrl);
-            messages.add(newMessage);
-        };
-
+        List<Message> messages = StreamSupport.stream(results.spliterator(), false)
+            .map(messageEntity -> {
+                long id = messageEntity.getKey().getId();
+                String messageBody = (String) messageEntity.getProperty("body");
+                long timestamp = (long) messageEntity.getProperty("timestamp");
+                String senderName = (String) messageEntity.getProperty("senderName");
+                String imageUrl = (String) messageEntity.getProperty("imageUrl");
+                Message newMessage = new Message(id, messageBody, timestamp, senderName, imageUrl);
+                return newMessage;
+            }).collect(Collectors.toList());
+        
+        messages.forEach((messageObject) -> System.out.println(messageObject.toString()));
         String messagesJson = convertToJsonUsingGson(messages);
 
         response.setContentType("application/json");
@@ -87,7 +86,7 @@ public class DataServlet extends HttpServlet {
         // response.sendRedirect("/forum.html");
     }
 
-    private String convertToJsonUsingGson(ArrayList messages) {
+    private String convertToJsonUsingGson(List messages) {
         Gson gson = new Gson();
         String json = gson.toJson(messages);
         return json;
@@ -95,9 +94,6 @@ public class DataServlet extends HttpServlet {
 
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
-        if (value == null) {
-        return defaultValue;
-        }
-        return value;
+        return value != null ? value : defaultValue;
   }
 }

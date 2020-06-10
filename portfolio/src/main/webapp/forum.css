@@ -39,12 +39,17 @@ body {
 }
 
 .comments-container-main {
+    align-items: center;
     display: flex;
     flex-direction: column;
-    margin-left: 50px; 
-    height: 1000px;
-    align-items: center;
-    width: 65%;
+    flex-grow: 2;
+}
+
+.comments-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2; 
+    width: 100%;
 }
 
 #comment-cursor-input {
@@ -56,6 +61,8 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
+    font-size: 1.0em;
+    color: black;
 }
 
 .comment-form {
@@ -65,7 +72,7 @@ body {
 
 .comment-image {
     display: flex;
-    width: 200px;
+    width: 500px;
 }
 
 #content {
