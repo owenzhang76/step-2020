@@ -1,7 +1,11 @@
 let startCursorLocation = "0";
-
+let loggedIn; 
+let blobUploadUrl = "";
 $(document).ready(function() {
-    checkLogin();
+    if (loggedIn == false || loggedIn == null) {
+        checkLogin();
+    }
+    setBlobstoreUploadUrl();
 })
 
 /*
@@ -24,13 +28,22 @@ function displayComments() {
             for (var index in orderedCommentsOldToNew) {
                 console.log("inside for in loop");
                 let commentDiv = document.createElement('div');
-                commentDiv.classList.add("comment");
+                commentDiv.classList.add("comment-div-container");
+                let commentText = document.createElement('div');
                 if(comments[index]["senderName"] == null) {
-                    commentDiv.innerHTML = "anon: " + comments[index]["body"];
+                    commentText.innerHTML = "anon: " + comments[index]["body"];
                 } else {
-                    commentDiv.innerHTML = comments[index]["senderName"] + ": " + comments[index]["body"];
+                    commentText.innerHTML = comments[index]["senderName"] + ": " + comments[index]["body"];
                 }
-                document.getElementById("comments-container").appendChild(commentDiv);
+                commentDiv.appendChild(commentText);
+                if (comments[index]["imageUrl"] != null) {
+                    console.log("image detected");
+                    let commentImage = document.createElement('img');
+                    commentImage.src = comments[index]["imageUrl"];
+                    commentImage.classList.add("comment-image");
+                    commentDiv.appendChild(commentImage);
+                }
+                 document.getElementById("comments-container").appendChild(commentDiv);
             }
             console.log(startCursorLocation);
         })
@@ -81,6 +94,9 @@ function loadPreviousComments() {
         })
 }
 
+/*
+ * Checks if user is logged in via the Users API. 
+ */
 function checkLogin() {
     fetch('/check-login')
         .then(response => response.json())
@@ -92,14 +108,31 @@ function checkLogin() {
                 document.getElementById("login-logout-button").href = data[1];
                 document.getElementById("login-logout-text").innerText = "LOGOUT";
                 document.getElementById("login-to-chat").style.display = "none";
-                 document.getElementById("chat-info-container").style.display = "flex";
+                document.getElementById("chat-info-container").style.visibility = "visible";
+                loggedIn = true;
                 displayComments();
             } else {
                 console.log("inside else");
-                document.getElementById("chat-info-container").style.display = "none";
+                document.getElementById("chat-info-container").style.visibility = "hidden";
                 document.getElementById("login-logout-button").href = data[1];
                 document.getElementById("login-logout-text").innerText = "LOGIN";
+                loggedIn = false;
                 displayComments();
             }
+        })
+}
+
+/*
+ * Sets action field of upload images url to correct blobstore upload url. 
+ */
+function setBlobstoreUploadUrl() {
+    console.log("get url ran");
+    fetch('/blobstore-upload-url')
+        .then(response => response.text()) 
+        .then((url) => {
+            console.log("blostore upload url is " + url);
+            blobUploadUrl = url;
+            const messageForm = document.getElementById('comment-form');
+            messageForm.action = blobUploadUrl;
         })
 }

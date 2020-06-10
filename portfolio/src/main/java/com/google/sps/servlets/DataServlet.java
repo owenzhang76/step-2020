@@ -58,7 +58,8 @@ public class DataServlet extends HttpServlet {
             String messageBody = (String) messageEntity.getProperty("body"); 
             long timestamp = (long) messageEntity.getProperty("timestamp");
             String senderName = (String) messageEntity.getProperty("senderName");
-            Message newMessage = new Message(id, messageBody, timestamp, senderName);
+            String imageUrl = (String) messageEntity.getProperty("imageUrl");
+            Message newMessage = new Message(id, messageBody, timestamp, senderName, imageUrl);
             messages.add(newMessage);
         };
 
@@ -70,19 +71,20 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String comment = getParameter(request, "comment-input", "");
-        String senderName = getParameter(request, "chatname-input", "");
-        long timestamp = System.currentTimeMillis();
+        // String comment = getParameter(request, "comment-input", "");
+        // String senderName = getParameter(request, "chatname-input", "");
+        // long timestamp = System.currentTimeMillis();
 
-        Entity messageEntity = new Entity("Message");
-        messageEntity.setProperty("body", comment);
-        messageEntity.setProperty("timestamp", timestamp);
-        messageEntity.setProperty("senderName", senderName);
+        // Entity messageEntity = new Entity("Message");
+        // messageEntity.setProperty("body", comment);
+        // messageEntity.setProperty("timestamp", timestamp);
+        // messageEntity.setProperty("senderName", senderName);
+        // messageEntity.setProperty("imageUrl", imageUrl);
 
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        datastore.put(messageEntity);
+        // DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        // datastore.put(messageEntity);
 
-        response.sendRedirect("/forum.html");
+        // response.sendRedirect("/forum.html");
     }
 
     private String convertToJsonUsingGson(ArrayList messages) {

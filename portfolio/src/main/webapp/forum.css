@@ -26,11 +26,16 @@ body {
 .button-and-comments-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    width: 50%;
 }
 
 .chat-info-container {
-    display: none;
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    visibility: hidden;
+    width: 30%;
 }
 
 .comments-container-main {
@@ -38,11 +43,29 @@ body {
     flex-direction: column;
     margin-left: 50px; 
     height: 1000px;
+    align-items: center;
     width: 65%;
 }
 
 #comment-cursor-input {
     display: none;
+}
+
+.comment-div-container {
+    border: 1px solid grey;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-image {
+    display: flex;
+    width: 200px;
 }
 
 #content {
@@ -66,6 +89,7 @@ body {
 .form-comments-container {
     display: flex;
     flex-direction: row;
+    width: 100%;
 }
 
 h1 {
@@ -99,4 +123,11 @@ p {
     justify-content: center;
     margin-bottom: 100px;
     margin-top: 40px;
+}
+
+.space-between-navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 10%;
 }

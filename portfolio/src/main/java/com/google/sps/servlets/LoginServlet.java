@@ -26,7 +26,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
         UserService userService = UserServiceFactory.getUserService();
-        String[] info = new String[2]; 
+        String[] info = new String[3]; 
 
         if (userService.isUserLoggedIn()) {
             System.out.println("user is logged in"); 
@@ -36,6 +36,7 @@ public class LoginServlet extends HttpServlet {
            
             info[0] = "true";
             info[1] = logoutUrl;
+            info[2] = userEmail;
 
             Gson gson = new Gson();
             String loggedInJsonInfo = gson.toJson(info);

@@ -17,27 +17,30 @@
   <body>
     <div id="content">
         <div class="nav-bar-container">
-            <a href="/index.html">
-                <div>HOME</div>
-            </a>
-            <a href="/forum.html">
-                <div>FORUM</div>
-            </a>
-            <a id="login-logout-button" href="">
-                <div id="login-logout-text">LOGIN</div>
-            </a>
+            <div class="space-between-navbar">
+                 <a href="/index.html">
+                    <div>HOME</div>
+                </a>
+                <a href="/forum.html">
+                    <div>FORUM</div>
+                </a>
+                <a id="login-logout-button" href="#">
+                    <div id="login-logout-text">LOGIN</div>
+                </a>
+            </div>
         </div>
         <div class="form-comments-container">
             <div id="chat-info-container" class="chat-info-container">
-                <div id="login-to-chat">Login to chat.</div>
-                <form action="/add-comment" method="POST">
+                <form id="comment-form" class="comment-form" action="" enctype="multipart/form-data" method="POST">
                     <input id="username-input" name="chatname-input" placeholder="enter a temporary chatname.."/>
                     <input id="comment-input" name="comment-input" placeholder="add comment.."/>
+                    <input id="file-input" name="file-input" type="file" placeholder="choose file">
                     <button type="submit">Post</button>
                 </form>
             </div>
             <div class="button-and-comments-container">
                 <button onClick="loadPreviousComments()">Load previous comments</button>
+                <div id="login-to-chat">Login to chat.</div>
                 <div class="comments-container-main" id="comments-container">
                     <div id="comments-container" class="comments-container"></div>
                 </div>

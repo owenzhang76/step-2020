@@ -237,6 +237,13 @@ p {
     justify-content: space-between;
 }
 
+.space-between-navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 10%;
+}
+
 .tagline {
     font-size: 1.5em;
     text-align: center;

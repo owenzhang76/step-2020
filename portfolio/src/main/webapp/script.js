@@ -2,6 +2,7 @@
 
 let elementsToShow;
 let scroll;
+let loggedIn;
 const quotes =
     ["\"In a world too often governed by corruption and arrogance, it can be difficult to stay true to one's philosophical and literary principles.\"   -Lemony Snicket, A Series of Unfortunate Events", "\"Did you know that the Sparrow flies south for winter?\"   -Skulduggery Pleasant, Skulduggery Pleasant", "\"Someday in your life, you'll realize there is no turning back. There was never any turning back.\"   -u/JayStar1213"];
 const entrances = 
@@ -133,4 +134,28 @@ function isElementInViewport(el) {
         rect.bottom <= (window.innerHeight || document.documentElement.clientHeight))
     );
 }
-  
+
+function checkLogin() {
+    fetch('/check-login')
+        .then(response => response.json())
+        .then((data) => {
+            console.log(data);
+            let successOrFailure = data[0];
+            if(successOrFailure === "true") {
+                console.log("inside if");
+                document.getElementById("login-logout-button").href = data[1];
+                document.getElementById("login-logout-text").innerText = "LOGOUT";
+                document.getElementById("login-to-chat").style.display = "none";
+                document.getElementById("chat-info-container").style.visibility = "visible";
+                loggedIn = true;
+                
+            } else {
+                console.log("inside else");
+                document.getElementById("chat-info-container").style.visibility = "hidden";
+                document.getElementById("login-logout-button").href = data[1];
+                document.getElementById("login-logout-text").innerText = "LOGIN";
+                loggedIn = false;
+               
+            }
+        })
+}

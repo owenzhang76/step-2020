@@ -56,41 +56,7 @@ public class HistoryCommentsServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    //     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //     Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
-    //     PreparedQuery preparedQuery = datastore.prepare(query);
-    //     FetchOptions options = FetchOptions.Builder.withLimit(4);
-    //     String startCursor = request.getParameter(request, "comment-cursor-input", "");
-    //     // if ((!startCursor.equals("")) || (startCursor != null)) {
-    //     //     options.startCursor()
-    //     // }
-    //     if(startCursor.equals("0")) {
-    //         System.out.println("Inside if");
-    //         Cursor cursor = preparedQuery.asQueryResultList(options).getCursor();
-    //         String encodedCursor = cursor.toWebSafeString();
-    //         System.out.println("this is the cursor: " + encodedCursor);
-    //     }
-
-    //     Iterable<Entity> results = preparedQuery.asIterable(options);
         
-
-    //     for (Entity messageEntity : results) {
-    //         long id = messageEntity.getKey().getId();
-    //         String messageBody = (String) messageEntity.getProperty("body"); 
-    //         long timestamp = (long) messageEntity.getProperty("timestamp");
-    //         Message newMessage = new Message(id, messageBody, timestamp);
-    //         messages.add(newMessage);
-    //     };
-
-    //     long fakeTimestamp = System.currentTimeMillis();
-    //     Message cursorPretendingToBeMessage = new Message("000", "encodedCursor", fakeTimestamp);
-    //     messages.add(cursorPretendingToBeMessage);
-
-    //     String messagesJson = convertToJsonUsingGson(messages);
-        
-    //     response.setContentType("application/json");
-    //     response.getWriter().println(messagesJson);
     }
 
 
@@ -133,12 +99,13 @@ public class HistoryCommentsServlet extends HttpServlet {
             String messageBody = (String) messageEntity.getProperty("body"); 
             long timestamp = (long) messageEntity.getProperty("timestamp");
             String senderName = (String) messageEntity.getProperty("senderName");
-            Message newMessage = new Message(id, messageBody, timestamp, senderName);
+            String imageUrl = (String) messageEntity.getProperty("imageUrl");
+            Message newMessage = new Message(id, messageBody, timestamp, senderName, imageUrl);
             messages.add(newMessage);
         };
         long fakeId = 000;
         long fakeTimestamp = System.currentTimeMillis();
-        Message cursorPretendingToBeMessage = new Message(fakeId, updatedEncodedCursor, fakeTimestamp, "system");
+        Message cursorPretendingToBeMessage = new Message(fakeId, updatedEncodedCursor, fakeTimestamp, "system", "null");
         messages.add(cursorPretendingToBeMessage);
 
         String messagesJson = convertToJsonUsingGson(messages);
