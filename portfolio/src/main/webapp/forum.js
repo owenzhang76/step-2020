@@ -5,7 +5,7 @@ $(document).ready(function() {
     if (loggedIn == false || loggedIn == null) {
         checkLogin();
     }
-    setBlobstoreUploadUrl();
+    // setBlobstoreUploadUrl();
 })
 
 /*
@@ -93,40 +93,40 @@ function loadPreviousComments() {
 /*
  * Checks if user is logged in via the Users API. 
  **/
-function checkLogin() {
-    fetch('/check-login')
-        .then(response => response.json())
-        .then((data) => {
-            let successOrFailure = data[0];
-            if(successOrFailure === "true") {
-                document.getElementById("login-logout-button").href = data[1];
-                document.getElementById("login-logout-text").innerText = "LOGOUT";
-                document.getElementById("login-to-chat").style.display = "none";
-                document.getElementById("chat-info-container").style.visibility = "visible";
-                loggedIn = true;
-                displayComments();
-            } else {
-                console.log("inside else");
-                document.getElementById("chat-info-container").style.visibility = "hidden";
-                document.getElementById("login-logout-button").href = data[1];
-                document.getElementById("login-logout-text").innerText = "LOGIN";
-                loggedIn = false;
-                displayComments();
-            }
-        })
-}
+// function checkLogin() {
+//     fetch('/check-login')
+//         .then(response => response.json())
+//         .then((data) => {
+//             let successOrFailure = data[0];
+//             if(successOrFailure === "true") {
+//                 document.getElementById("login-logout-button").href = data[1];
+//                 document.getElementById("login-logout-text").innerText = "LOGOUT";
+//                 document.getElementById("login-to-chat").style.display = "none";
+//                 document.getElementById("chat-info-container").style.visibility = "visible";
+//                 loggedIn = true;
+//                 displayComments();
+//             } else {
+//                 console.log("inside else");
+//                 document.getElementById("chat-info-container").style.visibility = "hidden";
+//                 document.getElementById("login-logout-button").href = data[1];
+//                 document.getElementById("login-logout-text").innerText = "LOGIN";
+//                 loggedIn = false;
+//                 displayComments();
+//             }
+//         })
+// }
 
 /*
  * Sets action field of upload images url to correct blobstore upload url. 
  **/
-function setBlobstoreUploadUrl() {
-    console.log("get url ran");
-    fetch('/blobstore-upload-url')
-        .then(response => response.text()) 
-        .then((url) => {
-            console.log("blostore upload url is " + url);
-            blobUploadUrl = url;
-            const messageForm = document.getElementById('comment-form');
-            messageForm.action = blobUploadUrl;
-        })
-}
+// function setBlobstoreUploadUrl() {
+//     console.log("get url ran");
+//     fetch('/blobstore-upload-url')
+//         .then(response => response.text()) 
+//         .then((url) => {
+//             console.log("blostore upload url is " + url);
+//             blobUploadUrl = url;
+//             const messageForm = document.getElementById('comment-form');
+//             messageForm.action = blobUploadUrl;
+//         })
+// }
