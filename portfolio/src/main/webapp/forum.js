@@ -5,7 +5,6 @@ $(document).ready(function() {
     if (loggedIn == false || loggedIn == null) {
         checkLogin();
     }
-    // setBlobstoreUploadUrl();
 })
 
 /*
@@ -41,10 +40,10 @@ function displayComments() {
         .catch(err => console.log(err));
 }
 
-/*
- * loads x immediately older comments after x newest comments. 
- * Pass in start cursor index.
- **/
+/**
+ * loads x immediately older comments after x newest comments and formats them into dom elements through javascript
+ * Pass in start cursor index to web servlet
+ */
 function loadPreviousComments() {
     let data = {
         startIndex: startCursorLocation,
