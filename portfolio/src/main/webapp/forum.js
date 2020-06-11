@@ -1,11 +1,13 @@
 let startCursorLocation = "0";
 let loggedIn; 
 let blobUploadUrl = "";
+let counter = 0;
+
 $(document).ready(function() {
     if (loggedIn == false || loggedIn == null) {
         checkLogin();
     }
-    // setBlobstoreUploadUrl();
+    setBlobstoreUploadUrl();
 })
 
 /*
@@ -36,7 +38,7 @@ function displayComments() {
                     console.log("image detected");
                     let commentImage = document.createElement('img');
                     commentImage.src = comments[index]["imageUrl"];
-                    commentImage.classList.add("comment-image");
+                    commentImage.classList.add("comment-medium");
                     commentDiv.appendChild(commentImage);
                 }
                 document.getElementById("comments-container").appendChild(commentDiv);

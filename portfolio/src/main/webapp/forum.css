@@ -70,9 +70,19 @@ body {
     flex-direction: column;
 }
 
-.comment-image {
+.comment-small {
     display: flex;
-    width: 500px;
+    width: 300px;
+}
+
+.comment-medium {
+    display: flex;
+    width: 600px;
+}
+
+.comment-large {
+    display: flex;
+    width: 900px;
 }
 
 #content {
