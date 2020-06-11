@@ -16,9 +16,11 @@ package com.google.sps.servlets;
 
 import com.google.sps.data.Message;
 import java.util.ArrayList;
+import java.util.List;
 import java.io.IOException;
 import java.lang.Iterable;
 import java.util.Enumeration;
+import java.util.stream.StreamSupport;
 import java.util.stream.Collectors;
 import java.util.Scanner;
 import org.json.*;
@@ -45,14 +47,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/previous-comments")
 public class HistoryCommentsServlet extends HttpServlet {
 
-    private ArrayList<Message> messages;
     private Cursor cursor;
-
-    @Override
-    public void init() {
-        this.messages = new ArrayList<Message>();
-    }
-
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -62,8 +57,6 @@ public class HistoryCommentsServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("doPost ran");
-
         String test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         JsonObject dataObj = new JsonParser().parse(test).getAsJsonObject();
         // startIndex is already encoded after the first time. 
@@ -75,7 +68,6 @@ public class HistoryCommentsServlet extends HttpServlet {
         PreparedQuery preparedQuery = datastore.prepare(query);
         FetchOptions options = FetchOptions.Builder.withLimit(4);
         if(startIndex.equals("0")) {
-            System.out.println("Inside if");
             Cursor cursor = preparedQuery.asQueryResultList(options).getCursor();
             encodedCursor = cursor.toWebSafeString();
         } else {
@@ -85,37 +77,35 @@ public class HistoryCommentsServlet extends HttpServlet {
        
         QueryResultList<Entity> resultList = preparedQuery.asQueryResultList(options);
         String updatedEncodedCursor = resultList.getCursor().toWebSafeString();
-        messages.clear(); 
 
-        for (Entity messageEntity : resultList) {
-            long id = messageEntity.getKey().getId();
-            String messageBody = (String) messageEntity.getProperty("body"); 
-            long timestamp = (long) messageEntity.getProperty("timestamp");
-            String senderName = (String) messageEntity.getProperty("senderName");
-            String imageUrl = (String) messageEntity.getProperty("imageUrl");
-            Message newMessage = new Message(id, messageBody, timestamp, senderName, imageUrl);
-            messages.add(newMessage);
-        };
+        List<Message> messages = StreamSupport.stream(resultList.spliterator(), false)
+            .map(messageEntity -> {
+                long id = messageEntity.getKey().getId();
+                String messageBody = (String) messageEntity.getProperty("body");
+                long timestamp = (long) messageEntity.getProperty("timestamp");
+                String senderName = (String) messageEntity.getProperty("senderName");
+                String imageUrl = (String) messageEntity.getProperty("imageUrl");
+                Message newMessage = new Message(id, messageBody, timestamp, senderName, imageUrl);
+                return newMessage;
+            }).collect(Collectors.toList());
+
         long fakeId = 000;
         long fakeTimestamp = System.currentTimeMillis();
         Message cursorPretendingToBeMessage = new Message(fakeId, updatedEncodedCursor, fakeTimestamp, "system", "null");
         messages.add(cursorPretendingToBeMessage);
-
-        String messagesJson = convertToJsonUsingGson(messages);
-        System.out.println("messagesJson: " + messagesJson);
+        Gson gson = new Gson();
+        String messagesJson = gson.toJson(messages);
 
         response.setContentType("application/json");
         response.getWriter().println(messagesJson);
     }
 
-
-    private String convertToJsonUsingGson(ArrayList messages) {
-        Gson gson = new Gson();
-        String json = gson.toJson(messages);
-        return json;
-    }
-
-
+    /**
+    * gets the value from POST request through a form by the input element name. 
+    * @param request the passed in request object
+    * @param name the name of the input element
+    * @param defaultValue the default value to be returned if the value is null. 
+    */
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
         String value = request.getParameter(name);
         return value != null ? value : defaultValue;

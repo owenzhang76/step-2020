@@ -18,14 +18,11 @@ function displayComments() {
     fetch('/add-comment')
         .then(response => response.json())
         .then((comments) => {
-            let orderedCommentsOldToNew = comments.reverse();
-            for (var i = 0; i < orderedCommentsOldToNew.length; i++) {
-                console.log(orderedCommentsOldToNew[i]['body']);
-            }
+            const orderedCommentsOldToNew = comments.reverse();
             for (var index in orderedCommentsOldToNew) {
-                let commentDiv = document.createElement('div');
+                const commentDiv = document.createElement('div');
                 commentDiv.classList.add("comment-div-container");
-                let commentText = document.createElement('div');
+                const commentText = document.createElement('div');
                 if(comments[index]["senderName"] == null) {
                     commentText.innerHTML = "anon: " + comments[index]["body"];
                 } else {
@@ -33,8 +30,7 @@ function displayComments() {
                 }
                 commentDiv.appendChild(commentText);
                 if (comments[index]["imageUrl"] != null) {
-                    console.log("image detected");
-                    let commentImage = document.createElement('img');
+                    const commentImage = document.createElement('img');
                     commentImage.src = comments[index]["imageUrl"];
                     commentImage.classList.add("comment-image");
                     commentDiv.appendChild(commentImage);
@@ -50,11 +46,9 @@ function displayComments() {
  * Pass in start cursor index.
  **/
 function loadPreviousComments() {
-    console.log('loadPreviousComments ran');
     let data = {
         startIndex: startCursorLocation,
     };
-    console.log(data);
     fetch("/previous-comments", {
             method: 'POST',
             headers: {
@@ -68,9 +62,9 @@ function loadPreviousComments() {
                 if (comments[index]["id"] == 0) {
                     startCursorLocation = comments[index]["body"];
                 } else {
-                    let commentDiv = document.createElement('div');
+                    const commentDiv = document.createElement('div');
                     commentDiv.classList.add("comment-div-container");
-                    let commentText = document.createElement('div');
+                    const commentText = document.createElement('div');
                     if(comments[index]["senderName"] == null) {
                         commentText.innerHTML = "anon: " + comments[index]["body"];
                     } else {
@@ -78,8 +72,7 @@ function loadPreviousComments() {
                     }
                     commentDiv.appendChild(commentText);
                     if (comments[index]["imageUrl"] != null) {
-                        console.log("image detected");
-                        let commentImage = document.createElement('img');
+                        const commentImage = document.createElement('img');
                         commentImage.src = comments[index]["imageUrl"];
                         commentImage.classList.add("comment-image");
                         commentDiv.appendChild(commentImage);
