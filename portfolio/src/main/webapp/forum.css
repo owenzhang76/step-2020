@@ -1,0 +1,140 @@
+.blog-section {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-section-container { 
+    display: flex;
+    flex-direction: row;
+    height: 900px;
+    margin-bottom: 100px;
+}
+
+body {
+    align-items: center;
+    background-color: #f6f6f6;
+    display: flex;
+    flex-direction: column;
+    font-family: "Lucida Sans Unicode","Lucida Grande","sans-serif" !important;
+    font-size: 1.5em !important;
+    justify-content: center;
+    line-height: 1.4em !important;
+    margin: 0;
+}
+
+.button-and-comments-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+}
+
+.chat-info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    visibility: hidden;
+    width: 30%;
+}
+
+.comments-container-main {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
+}
+
+.comments-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2; 
+    width: 100%;
+}
+
+#comment-cursor-input {
+    display: none;
+}
+
+.comment-div-container {
+    border: 1px solid grey;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: 1.0em;
+    color: black;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-image {
+    display: flex;
+    width: 500px;
+}
+
+#content {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.fa-linkedin {
+    background: white;
+    color: black !important;
+    font-size: 1.3em !important;
+}
+
+.fa-github {
+    background: white;
+    color: black !important;
+    font-size: 1.3em !important;
+}
+
+.form-comments-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+h1 {
+    margin-bottom: 30px !important;
+}
+
+h2 {
+    font-size: 2.0em !important;
+}
+
+.nav-bar-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+p {
+    font-family: "Lucida Sans Unicode","Lucida Grande","sans-serif" !important;
+    font-size: 1.6em !important;
+    line-height: 1.4em !important;
+    margin-top: 25px !important;
+    margin-bottom: 25px !important;
+    text-align: center;
+    width: 60%;
+}
+
+.social-media-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 100px;
+    margin-top: 40px;
+}
+
+.space-between-navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 10%;
+}
