@@ -13,7 +13,6 @@ $(document).ready(function() {
  * Requires ArrayList message to be cleared each fetch is called. 
  **/
 function displayComments() {
-    console.log("displayComments ran");
     fetch('/add-comment')
         .then(response => response.json())
         .then((comments) => {

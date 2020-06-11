@@ -17,19 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/check-login")
 public class LoginServlet extends HttpServlet {
-
-    @Override
-    public void init() {
-
-    }
-
+    
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
         UserService userService = UserServiceFactory.getUserService();
         String[] info = new String[3]; 
 
         if (userService.isUserLoggedIn()) {
-            System.out.println("user is logged in"); 
             String userEmail = userService.getCurrentUser().getEmail();
             String urlToRedirectToAfterUserLogsOut = "/";
             String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
@@ -42,14 +36,12 @@ public class LoginServlet extends HttpServlet {
             String loggedInJsonInfo = gson.toJson(info);
             response.setContentType("application/json");
             response.getWriter().println(loggedInJsonInfo);
-        } else {
-            System.out.println("user is logged out"); 
+        } else { 
             String urlToRedirectToAfterUserLogsIn = "/";
             String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
 
             info[0] = "false";
             info[1] = loginUrl;
-            System.out.println(info);
             
             Gson gson = new Gson();
             String loggedOutJsonInfo = gson.toJson(info);
