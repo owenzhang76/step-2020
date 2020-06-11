@@ -139,23 +139,18 @@ function checkLogin() {
     fetch('/check-login')
         .then(response => response.json())
         .then((data) => {
-            console.log(data);
-            let successOrFailure = data[0];
+            const successOrFailure = data[0];
             if(successOrFailure === "true") {
-                console.log("inside if");
                 document.getElementById("login-logout-button").href = data[1];
                 document.getElementById("login-logout-text").innerText = "LOGOUT";
                 document.getElementById("login-to-chat").style.display = "none";
                 document.getElementById("chat-info-container").style.visibility = "visible";
                 loggedIn = true;
-                
             } else {
-                console.log("inside else");
                 document.getElementById("chat-info-container").style.visibility = "hidden";
                 document.getElementById("login-logout-button").href = data[1];
                 document.getElementById("login-logout-text").innerText = "LOGIN";
                 loggedIn = false;
-               
             }
         })
 }

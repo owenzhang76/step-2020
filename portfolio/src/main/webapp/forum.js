@@ -45,7 +45,7 @@ function displayComments() {
  * Pass in start cursor index to web servlet
  */
 function loadPreviousComments() {
-    let data = {
+    const data = {
         startIndex: startCursorLocation,
     };
     fetch("/previous-comments", {
