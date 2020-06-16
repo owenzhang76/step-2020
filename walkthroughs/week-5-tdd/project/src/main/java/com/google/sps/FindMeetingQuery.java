@@ -14,10 +14,24 @@
 
 package com.google.sps;
 
-import java.util.Collection;
+import java.io.*; 
+import java.util.*; 
+// import java.util.ArrayList;
+// import java.util.Arrays;
+// import java.util.Collection;
+// import java.util.Collections;
+// import java.util.HashSet;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    throw new UnsupportedOperationException("TODO: Implement this method.");
+    Collection<TimeRange> thirtyMinuteTimeSlots = new HashSet<>();
+    TimeRange eightToNineWorkDay = TimeRange.fromStartEnd(8, 21, false);
+    for(int i = eightToNineWorkDay.start(); i < eightToNineWorkDay.end(); i++) {
+        TimeRange newTimeRange = TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(i, 0), TimeRange.getTimeInMinutes(i, 30), false);
+        TimeRange newTimeRangeTwo = TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(i, 30), TimeRange.getTimeInMinutes(i+1, 0), false);
+        thirtyMinuteTimeSlots.add(newTimeRange);
+        thirtyMinuteTimeSlots.add(newTimeRangeTwo);
+    }
+    return null;
   }
 }
