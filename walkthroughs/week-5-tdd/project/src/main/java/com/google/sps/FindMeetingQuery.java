@@ -24,14 +24,61 @@ import java.util.*;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    Collection<TimeRange> thirtyMinuteTimeSlots = new HashSet<>();
+    long requestDuration = request.getDuration();
+    ArrayList<TimeRange> thirtyMinuteTimeSlots = new ArrayList<>(); 
     TimeRange eightToNineWorkDay = TimeRange.fromStartEnd(8, 21, false);
-    for(int i = eightToNineWorkDay.start(); i < eightToNineWorkDay.end(); i++) {
-        TimeRange newTimeRange = TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(i, 0), TimeRange.getTimeInMinutes(i, 30), false);
-        TimeRange newTimeRangeTwo = TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(i, 30), TimeRange.getTimeInMinutes(i+1, 0), false);
-        thirtyMinuteTimeSlots.add(newTimeRange);
-        thirtyMinuteTimeSlots.add(newTimeRangeTwo);
+
+    HashMap<String, ArrayList<ArrayList<TimeRange>>> peopleAndTimeRangesMap = new HashMap<String,  ArrayList<ArrayList<TimeRange>>>();
+    // Put all invitee names in a hashmap as the key, and their free and busy time in an ArrayList<TimeRange> as the value 
+    for (String invitee : request.getAttendees()) {
+        System.out.println("The person invited to this meeting request is " + invitee);
+        ArrayList<TimeRange> freeTimeRanges = new ArrayList<>(); 
+        ArrayList<TimeRange> busyTimeRanges = new ArrayList<>(); 
+        ArrayList<ArrayList<TimeRange>> freeAndBusyTimeRanges = new ArrayList<>();
+        freeAndBusyTimeRanges.add(freeTimeRanges);
+        freeAndBusyTimeRanges.add(busyTimeRanges);
+        peopleAndTimeRangesMap.put(invitee, freeAndBusyTimeRanges);
     }
+
+    // For each invitee we care about in this particular request
+    for (String invitee : peopleAndTimeRangesMap.keySet()) {
+        // Iterate through all the events
+        for (Event event : events) {
+            // Iterate through all the attendees of the event
+            for(String busyPerson : event.getAttendees()) {
+                // check if invited person are in any of these events
+                if (invitee.equals(busyPerson)) {
+                    // if they are in events, add the event TimeRange into their busyTimeRanges array
+                    peopleAndTimeRangesMap.get(invitee).get(1).add(event.getWhen());
+                }
+            }
+        }
+        // Sort the busy TimeRanges after everything is added.
+        Collections.sort(peopleAndTimeRangesMap.get(invitee).get(1), TimeRange.ORDER_BY_START);
+    }
+
+
+
+
+
+
+    // view peopleAndFreeTime hashmap
+    Set set = peopleAndTimeRangesMap.entrySet();
+    Iterator iterator = set.iterator();
+    while(iterator.hasNext()) {
+        Map.Entry mentry = (Map.Entry)iterator.next();
+        System.out.print("key is: "+ mentry.getKey() + " & Value is: ");
+        System.out.println(mentry.getValue());
+        System.out.println();
+    }
+
+
+
+
     return null;
+  }
+
+  public void findFreeTime(ArrayList<TimeRange> busyTimeRanges) {
+      
   }
 }
