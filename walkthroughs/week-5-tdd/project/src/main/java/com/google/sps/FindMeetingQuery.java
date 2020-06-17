@@ -60,6 +60,7 @@ public final class FindMeetingQuery {
         // ArrayList<TimeRange> sortedBusyTimeRanges = Collections.sort(peopleAndTimeRangesMap.get(invitee).get(1), TimeRange.ORDER_BY_START);
         Collections.sort(peopleAndTimeRangesMap.get(invitee).get(1), TimeRange.ORDER_BY_START);
         removeContainedBusyEvents(peopleAndTimeRangesMap.get(invitee).get(1), invitee);
+        findFreeTime(peopleAndTimeRangesMap.get(invitee).get(1), 0, 0, invitee);
     }
 
     // view peopleAndFreeTime hashmap
@@ -111,7 +112,51 @@ public final class FindMeetingQuery {
     }
   }
 
-//   public void findFreeTime(ArrayList<TimeRange> busyTimeRanges) {
-//       for (int i = 0; i < busyTimeRanges.size()-1; i++) {
-//   }
+
+  public void findFreeTime(ArrayList<TimeRange> busyTimeRanges, int index, int startTime, String name) {
+    findFreeTimeHelper(busyTimeRanges, index, startTime, name);
+  }
+
+  public void findFreeTimeHelper(ArrayList<TimeRange> busyTimeRanges, int index, int startTime, String name) {
+    if (startTime == 0) {
+        if (busyTimeRanges.size() == 0) {
+            TimeRange freeTime = TimeRange.fromStartEnd(0, 1440, false);
+            peopleAndTimeRangesMap.get(name).get(0).add(freeTime);
+            return;
+        } else {
+            int start = startTime;
+            int end = busyTimeRanges.get(index).start();
+            int duration = busyTimeRanges.get(index).duration();
+            int newStartTime = end + duration;
+            TimeRange freeTime = TimeRange.fromStartEnd(start, end-1, false);
+
+            peopleAndTimeRangesMap.get(name).get(0).add(freeTime);
+            
+            findFreeTimeHelper(busyTimeRanges, index + 1, newStartTime, name);
+        }
+    } else if (startTime == 1440) {
+        return;
+    } else {
+        if (index < busyTimeRanges.size()) {
+            int start = startTime;
+            int end = busyTimeRanges.get(index).start();
+            int duration = busyTimeRanges.get(index).duration();
+            int newStartTime = end + duration;
+            TimeRange freeTime = TimeRange.fromStartEnd(start+1, end-1, false);
+
+            peopleAndTimeRangesMap.get(name).get(0).add(freeTime);
+            
+            findFreeTimeHelper(busyTimeRanges, index + 1, newStartTime, name);
+        } else {
+            int start = startTime;
+            int end = 1440;
+            TimeRange freeTime = TimeRange.fromStartEnd(start+1, end, false);
+
+            peopleAndTimeRangesMap.get(name).get(0).add(freeTime);
+
+            findFreeTimeHelper(busyTimeRanges, index + 1, 1440, name);
+        }
+    }
+  }
+
 }
