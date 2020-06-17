@@ -23,15 +23,18 @@ import java.util.*;
 // import java.util.HashSet;
 
 public final class FindMeetingQuery {
+    private final HashMap<String, ArrayList<ArrayList<TimeRange>>> peopleAndTimeRangesMap = new HashMap<String,  ArrayList<ArrayList<TimeRange>>>();
+
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     long requestDuration = request.getDuration();
     ArrayList<TimeRange> thirtyMinuteTimeSlots = new ArrayList<>(); 
     TimeRange eightToNineWorkDay = TimeRange.fromStartEnd(8, 21, false);
 
-    HashMap<String, ArrayList<ArrayList<TimeRange>>> peopleAndTimeRangesMap = new HashMap<String,  ArrayList<ArrayList<TimeRange>>>();
+  
     // Put all invitee names in a hashmap as the key, and their free and busy time in an ArrayList<TimeRange> as the value 
     for (String invitee : request.getAttendees()) {
-        System.out.println("The person invited to this meeting request is " + invitee);
+
+        // System.out.println("The person invited to this meeting request is " + invitee);
         ArrayList<TimeRange> freeTimeRanges = new ArrayList<>(); 
         ArrayList<TimeRange> busyTimeRanges = new ArrayList<>(); 
         ArrayList<ArrayList<TimeRange>> freeAndBusyTimeRanges = new ArrayList<>();
@@ -54,15 +57,16 @@ public final class FindMeetingQuery {
             }
         }
         // Sort the busy TimeRanges after everything is added.
+        // ArrayList<TimeRange> sortedBusyTimeRanges = Collections.sort(peopleAndTimeRangesMap.get(invitee).get(1), TimeRange.ORDER_BY_START);
         Collections.sort(peopleAndTimeRangesMap.get(invitee).get(1), TimeRange.ORDER_BY_START);
+        removeContainedBusyEvents(peopleAndTimeRangesMap.get(invitee).get(1), invitee);
     }
 
-
-
-
-
-
     // view peopleAndFreeTime hashmap
+    System.out.println();
+    System.out.println();
+    System.out.println();
+    System.out.println();
     Set set = peopleAndTimeRangesMap.entrySet();
     Iterator iterator = set.iterator();
     while(iterator.hasNext()) {
@@ -72,13 +76,42 @@ public final class FindMeetingQuery {
         System.out.println();
     }
 
-
-
-
     return null;
   }
 
-  public void findFreeTime(ArrayList<TimeRange> busyTimeRanges) {
-      
+  public void removeContainedBusyEvents(ArrayList<TimeRange> busyTimeRanges, String name) {
+    System.out.println("This is the busyTimeRanges: ");
+    for(int i = 0; i < busyTimeRanges.size(); i++) {   
+        System.out.print(busyTimeRanges.get(i));
+    }   
+    System.out.println();
+    for (int i = 0; i < busyTimeRanges.size()-1; i++) {
+       for (int j = 1; j < busyTimeRanges.size(); j++) {
+           TimeRange timeOne = busyTimeRanges.get(i);
+           TimeRange timeTwo = busyTimeRanges.get(j);
+            System.out.println("timeOne is " + timeOne);
+            System.out.println("timeTwo is " + timeTwo);
+           if (timeOne.overlaps(timeTwo)) {
+               if (timeOne.equals(timeTwo)) {
+                peopleAndTimeRangesMap.get(name).get(1).set(i, null);
+                System.out.println(" case 1 setting " + peopleAndTimeRangesMap.get(name).get(1).get(i) + " to null");
+               } else if (timeOne.contains(timeTwo)) {
+                  System.out.println("case 2 setting " + peopleAndTimeRangesMap.get(name).get(1).get(j) + " to null");
+                  peopleAndTimeRangesMap.get(name).get(1).set(j, null);
+               } else if (timeTwo.contains(timeOne)) {
+                    System.out.println("case 3 setting " + peopleAndTimeRangesMap.get(name).get(1).get(j) + " to null");
+                    peopleAndTimeRangesMap.get(name).get(1).set(j, null);
+               } else {
+                  System.out.println("doing nothing");
+               }
+           } else {
+                 System.out.println("these two times don't overlap.");
+           }
+       }
+    }
   }
+
+//   public void findFreeTime(ArrayList<TimeRange> busyTimeRanges) {
+//       for (int i = 0; i < busyTimeRanges.size()-1; i++) {
+//   }
 }
