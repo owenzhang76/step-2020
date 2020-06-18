@@ -231,6 +231,9 @@ public final class FindMeetingQuery {
                 correctKeyIndexForFirstGuy = 0;
                 smallerMutualTimeEventIndex = firstGuyEventsIndex;
             }
+            if (specialCase != null) {
+                TimeRange timeOne = specialCase;
+            }
             TimeRange timeTwo = peopleAndTimeRangesMap.get(keys.get(keyIndex)).get(0).get(eventsIndex);
             if (!timeOne.overlaps(timeTwo)) {
                 compareHelper(keys, duration, keyIndex, firstGuyEventsIndex, eventsIndex+1, 0, 0, null, false, false);
@@ -239,19 +242,35 @@ public final class FindMeetingQuery {
                 if (timeOne >= duration && timeTwo >= duration) {
                     if (timeOne.equals(timeTwo)) {
                         System.out.println("case 1" );
-                        compareHelper(keys, duration, keyIndex+1, firstGuyEventsIndex, 0, 0, 0, null, false, false)
+                        if (specialCase) {
+                            compareHelper(keys, duration, keyIndex, firstGuyEventsIndex, eventsIndex, 0, 0, specialTimeRange, false, true);
+                        } else {
+                            compareHelper(keys, duration, keyIndex+1, firstGuyEventsIndex, 0, 0, 0, null, false, false);
+                        }
                     } else if (timeOne.contains(timeTwo)) {
                         System.out.println("case 2");
                         compareHelper(keys, duration, keyIndex+1, firstGuyEventsIndex, eventsIndex, keyIndex, eventsIndex, null, false, true);
                     } else if (timeTwo.contains(timeOne)) {
                         System.out.println("case 3");
-                        compareHelper(keys, duration, keyIndex+1, firstGuyEventsIndex, correctEventIndexForFirstGuy, 0, 0, null, false, false);
+                        if (specialCase) {
+                            compareHelper(keys, duration, keyIndex, firstGuyEventsIndex, eventsIndex, 0, 0, specialTimeRange, false, true);
+                        } else {
+                            compareHelper(keys, duration, keyIndex+1, firstGuyEventsIndex, correctEventIndexForFirstGuy, 0, 0, null, false, false);
+                        }
                     } else {
                         System.out.println("case 4");
-                        // TO DO: create TimeRange for specialCase and make sure future comparisons will use that instead of others
+                        int startSpecialTime = timeOne.start() > timeTwo.start() ? timeOne.start() : timeTwo.start();
+                        int endSpecialTime = timeOne.end() > timeTwo.end() ? timeTwo.end() : timeOne.end();
+                        int specialDuration = endSpecialTime - startSpecialTime;
+                        if (specialDuration >= duration) {
+                            TimeRange specialTimeRange = TimeRange.fromStartEnd(startSpecialTime, endSpecialTime, false);
+                            compareHelper(keys, duration, keyIndex, firstGuyEventsIndex, eventsIndex, 0, 0, specialTimeRange, false, true);
+                        } else {
+                            compareHelper(keys, duration, keyIndex, firstGuyEventsIndex, eventsIndex+1, 0, 0, specialTimeRange, false, true);
+                        }
                     }
                 } else {
-                    compareHelper(keys, duration, keyIndex, firstGuyEventsIndex, eventsIndex+1, 0, 0, null, false, false);
+                    compareHelper(keys, duration, correctKeyIndexForFirstGuy, correctEventIndexForFirstGuy, eventsIndex+1, 0, 0, null, false, false);
                 }
             }
         }
