@@ -62,12 +62,15 @@ public final class FindMeetingQuery {
         removeContainedBusyEvents(peopleAndTimeRangesMap.get(invitee).get(1), invitee);
         findFreeTime(peopleAndTimeRangesMap.get(invitee).get(1), 0, 0, invitee);
     }
+    List keys = new ArrayList(peopleAndTimeRangesMap.keySet());
+    findMutualFreeTimeTwo(keys, (int) requestDuration, 0, false);
 
     // view peopleAndFreeTime hashmap
     System.out.println();
     System.out.println();
     System.out.println();
     System.out.println();
+    
     Set set = peopleAndTimeRangesMap.entrySet();
     Iterator iterator = set.iterator();
     while(iterator.hasNext()) {
@@ -112,17 +115,21 @@ public final class FindMeetingQuery {
     }
   }
 
-
   public void findFreeTime(ArrayList<TimeRange> busyTimeRanges, int index, int startTime, String name) {
     findFreeTimeHelper(busyTimeRanges, index, startTime, name);
   }
 
   public void findFreeTimeHelper(ArrayList<TimeRange> busyTimeRanges, int index, int startTime, String name) {
     if (startTime == 0) {
+        // if this person does not have any events on this day
         if (busyTimeRanges.size() == 0) {
             TimeRange freeTime = TimeRange.fromStartEnd(0, 1440, false);
             peopleAndTimeRangesMap.get(name).get(0).add(freeTime);
             return;
+        } else if (busyTimeRanges.get(index).start() == 0) {
+            int duration = busyTimeRanges.get(index).duration();
+            int newStartTime = duration;
+            findFreeTimeHelper(busyTimeRanges, index + 1, newStartTime, name);
         } else {
             int start = startTime;
             int end = busyTimeRanges.get(index).start();
@@ -159,4 +166,103 @@ public final class FindMeetingQuery {
     }
   }
 
+  public void findMutualFreeTimeOne(HashMap<String, ArrayList<ArrayList<TimeRange>>> peopleAndTimeRangesMap, int duration) {
+    Collection<TimeRange> mutualFreeTime = new HashSet<>();
+    List keys = new ArrayList(peopleAndTimeRangesMap.keySet());
+    // go through each person in invited
+    for (int i = 0; i < keys.size()-1; i++) {
+        Object personOne = keys.get(i);
+        ArrayList<TimeRange> freeTimeOne = peopleAndTimeRangesMap.get(personOne).get(0);
+        int freeTimeSizeOne = freeTimeOne.size();
+        // compare with every other person excluding already compared
+        for (int j = 1; j < keys.size(); j++) {
+            int m = 0;
+            Object personTwo = keys.get(i);
+            int freeTimeSizeTwo = freeTimeTwo.size();
+            for (int k = 0; k < freeTimeSizeTwo; k++) {
+                TimeRange timeOne = freeTimeOne.get(m);
+                TimeRange timeTwo = freeTimeTwo.get(k);
+                // if two times have overlap
+                if (timeOne.overlaps(timeTwo)) {
+                    if (timeOne.equals(timeTwo)) {
+                        System.out.println("case 1" );
+                    } else if (timeOne.contains(timeTwo)) {
+                        System.out.println("case 2");
+                    } else if (timeTwo.contains(timeOne)) {
+                        System.out.println("case 3");
+                    } else {
+                        System.out.println("doing nothing");
+                    }
+                } 
+                // if they don't overlap
+                else {
+                    System.out.println("these two times don't overlap.");
+                }
+            }
+        }
+    }
+  };
+
+  public void findMutualFreeTimeTwo(List keys, int duration, int keyIndex, int firstGuyEventsIndex int eventsIndex, boolean isMutual) {
+      compareHelper(keys, duration, keyIndex, firstGuyEventsIndex, eventsIndex, 0, 0, null, false);
+  }
+
+  public void compareHelper(List keys, int duration, int keyIndex, int firstGuyEventsIndex, int eventsIndex, int smallerMutualTimeKeyIndex, int smallerMutualTimeEventIndex, TimeRange specialCase, boolean isMutual, boolean useSmaller) {
+    if (isMutual) {
+        addToCollection(smallerMutualTimeKeyIndex, smallerMutualTimeEventIndex, specialCase);
+    };
+    // if we finished the algorithm
+    if (firstGuyEventsIndex == peopleAndTimeRangesMap.get(keys.get(0)).get(0).size()) {
+        return;
+    }
+    else {
+        // if we're at the end of the nth person's event list
+        if (eventsIndex == peopleAndTimeRangesMap.get(keys.get(keyIndex)).get(0).size()) {
+            compareHelper(keys, duration, keyIndex+1, firstGuyEventsIndex, 0, 0, 0, null, false, false);
+        } else {
+            int correctKeyIndexForFirstGuy = 0;
+            int correctEventIndexForFirstGuy = 0;
+            if (useSmaller) {
+                TimeRange timeOne = peopleAndTimeRangesMap.get(keys.get(smallerMutualTimeKeyIndex)).get(0).get(smallerMutualTimeEventIndex);
+                correctKeyIndexForFirstGuy = smallerMutualTimeKeyIndex;
+                correctEventIndexForFirstGuy = smallerMutualTimeEventIndex;
+            } else {
+                TimeRange timeOne = peopleAndTimeRangesMap.get(keys.get(0)).get(0).get(firstGuyEventsIndex);
+                correctKeyIndexForFirstGuy = 0;
+                smallerMutualTimeEventIndex = firstGuyEventsIndex;
+            }
+            TimeRange timeTwo = peopleAndTimeRangesMap.get(keys.get(keyIndex)).get(0).get(eventsIndex);
+            if (!timeOne.overlaps(timeTwo)) {
+                compareHelper(keys, duration, keyIndex, firstGuyEventsIndex, eventsIndex+1, 0, 0, null, false, false);
+            } else {
+                // if these overlapping timeRanges both are bigger than the requested duration
+                if (timeOne >= duration && timeTwo >= duration) {
+                    if (timeOne.equals(timeTwo)) {
+                        System.out.println("case 1" );
+                        compareHelper(keys, duration, keyIndex+1, firstGuyEventsIndex, 0, 0, 0, null, false, false)
+                    } else if (timeOne.contains(timeTwo)) {
+                        System.out.println("case 2");
+                        compareHelper(keys, duration, keyIndex+1, firstGuyEventsIndex, eventsIndex, keyIndex, eventsIndex, null, false, true);
+                    } else if (timeTwo.contains(timeOne)) {
+                        System.out.println("case 3");
+                        compareHelper(keys, duration, keyIndex+1, firstGuyEventsIndex, correctEventIndexForFirstGuy, 0, 0, null, false, false);
+                    } else {
+                        System.out.println("case 4");
+                        // TO DO: create TimeRange for specialCase and make sure future comparisons will use that instead of others
+                    }
+                } else {
+                    compareHelper(keys, duration, keyIndex, firstGuyEventsIndex, eventsIndex+1, 0, 0, null, false, false);
+                }
+            }
+        }
+    }
+  }
+
+  public void addToCollection(int keyIndex, int eventIndex, TimeRange specialCase) {
+    if (specialCase != null) {
+        // add specialCase
+    } else {
+        // get TimeRange using keyIndex and eventIndex
+    }
+  }
 }
